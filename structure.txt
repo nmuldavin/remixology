@@ -16,12 +16,15 @@ Recipe
   Ingredient
   Name
   Type?
-  If purchased(
-    Brand or Vintage (optional)
-    Tasting Notes
-  )
-  If Homemade (
-    Recipe (main)
-    Recipe (variations)
+  Purchased or Homemade
+
+  Purchased Ingredient
+    Brand
+    Vintage?
+    Price
+    Notes
+    
+  Homemade Ingredient
+    Recipe(main)
+    Recipe(variations)
     Logs
-  )
