@@ -16,15 +16,24 @@ Recipe
   Ingredient
   Name
   Type?
-  Purchased or Homemade
+  Variations
 
   Purchased Ingredient
     Brand
     Vintage?
     Price
     Notes
-    
+
   Homemade Ingredient
     Recipe(main)
     Recipe(variations)
     Logs
+
+
+    class PurchasedIngredient(IngredientInstance):
+    product = models.CharField(default = '', max_length = 100)
+    brand = models.CharField(default = '', max_length = 100)
+    url = models.URLField(default='')
+
+#class HomemadeIngredient(IngredientInstance):
+ #   pass
