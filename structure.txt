@@ -1,0 +1,27 @@
+Cocktail
+  Name
+  Recipe (main)
+  Recipe (variations)
+  Logs
+
+Ingredient
+  Name
+  Type?
+  If purchased(
+    Brand or Vintage (optional)
+    Tasting Notes
+  )
+  If Homemade (
+    Recipe (main)
+    Recipe (variations)
+    Logs
+  )
+
+Recipe
+  Ingredients, Amounts
+  Instructions
+  Notes
+  
+  Each recipe belongs to a specific ingredient or cocktail
+  Each ingredient may belong to any number of recipes
+  All fields are optional except name.
