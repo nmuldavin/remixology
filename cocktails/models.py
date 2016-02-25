@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
-from django.contrib import admin
 from django.template.defaultfilters import slugify
+from django_measurement.models import MeasurementField
+from measurement.measures import Volume
 from django.db import models
 
 
@@ -30,8 +31,7 @@ class Ingredient(models.Model):
 
     name = models.CharField(max_length=50)
     slug = models.SlugField(default='', blank=True)
-    type = models.CharField(max_length=2,
-                                      choices=MEDIA_CHOICES)
+    type = models.CharField(max_length=2, choices=MEDIA_CHOICES, blank=True)
     def __str__(self):
         return self.name
 
@@ -41,24 +41,20 @@ class Ingredient(models.Model):
 
 class IngredientInstance(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,)
-    name = models.CharField(default = '', max_length = 100)
 
+    class Meta:
+        abstract = True
+
+class PurchasedIngredient(IngredientInstance):
+    product = models.CharField(default='', max_length = 100)
+    notes = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    volume = MeasurementField(measurement=Volume, null=True)
 
     def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(IngredientInstance, self).save(*args, **kwargs)
+        return self.ingredient.name + " - " + self.product
 
 
-
-admin.site.register(IngredientInstance)
-
-class IngredientAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-
-admin.site.register(Ingredient, IngredientAdmin)
 
 class Recipe(models.Model):
     name = models.CharField(max_length=50)
@@ -70,12 +66,6 @@ class Recipe(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Recipe, self).save(*args, **kwargs)
-
-class RecipeAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-
-admin.site.register(Recipe, RecipeAdmin)
-
 
 # cocktail class, containing a list of recipes, variations, and notes as well
 # as a log of each time the cocktail was made and in what context
@@ -90,10 +80,6 @@ class Cocktail(models.Model):
         self.slug = slugify(self.name)
         super(Cocktail, self).save(*args, **kwargs)
 
-class CocktailAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("name",)}
-
-admin.site.register(Cocktail, CocktailAdmin)
 
 
 
