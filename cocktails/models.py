@@ -71,6 +71,7 @@ class HomemadeIngredient(IngredientInstance):
 class Recipe(models.Model):
     descriptor = models.CharField(default='', max_length=100)
     slug = models.SlugField(default='', blank=True)
+    ingredients = models.ManyToManyField(Ingredient)
 
     def __str__(self):
         return self.descriptor
@@ -79,8 +80,6 @@ class Recipe(models.Model):
         self.slug = slugify(self.descriptor)
         super(Recipe, self).save(*args, **kwargs)
 
-class CocktailRecipe(Recipe):
-    ingredients = models.ManyToManyField(Ingredient)
 
 
 
