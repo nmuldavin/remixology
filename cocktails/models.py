@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 
-from django.contrib import admin
 from django.template.defaultfilters import slugify
+from django_measurement.models import MeasurementField
+from measurement.measures import Volume
 from django.db import models
 
 
@@ -47,7 +48,8 @@ class IngredientInstance(models.Model):
 class PurchasedIngredient(IngredientInstance):
     product = models.CharField(default='', max_length = 100)
     notes = models.TextField(blank=True)
-
+    price = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    volume = MeasurementField(measurement=Volume, null=True)
 
     def __str__(self):
         return self.ingredient.name + " - " + self.product
