@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ingredient, IngredientInstance, Recipe, Cocktail
+from .models import Ingredient, Recipe, Cocktail, PurchasedIngredient
 
 
 
@@ -7,7 +7,7 @@ class IngredientAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientInstance)
+admin.site.register(PurchasedIngredient)
 
 class RecipeAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}

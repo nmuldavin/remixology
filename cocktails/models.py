@@ -30,8 +30,7 @@ class Ingredient(models.Model):
 
     name = models.CharField(max_length=50)
     slug = models.SlugField(default='', blank=True)
-    type = models.CharField(max_length=2,
-                                      choices=MEDIA_CHOICES, blank=True)
+    type = models.CharField(max_length=2, choices=MEDIA_CHOICES, blank=True)
     def __str__(self):
         return self.name
 
@@ -41,11 +40,17 @@ class Ingredient(models.Model):
 
 class IngredientInstance(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,)
-    name = models.CharField(default = '', max_length = 100)
+
+    class Meta:
+        abstract = True
+
+class PurchasedIngredient(IngredientInstance):
+    product = models.CharField(default='', max_length = 100)
+    notes = models.TextField(blank=True)
 
 
     def __str__(self):
-        return self.ingredient.name + " - " + self.name
+        return self.ingredient.name + " - " + self.product
 
 
 
