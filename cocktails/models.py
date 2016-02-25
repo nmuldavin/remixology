@@ -31,7 +31,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(default='', blank=True)
     type = models.CharField(max_length=2,
-                                      choices=MEDIA_CHOICES)
+                                      choices=MEDIA_CHOICES, blank=True)
     def __str__(self):
         return self.name
 
@@ -45,11 +45,8 @@ class IngredientInstance(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return self.ingredient.name + " - " + self.name
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(IngredientInstance, self).save(*args, **kwargs)
 
 
 class Recipe(models.Model):
