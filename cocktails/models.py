@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.template.defaultfilters import slugify
 from django.db import models
 
 
@@ -43,3 +44,17 @@ class Recipe(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.label)
         super(Recipe, self).save(*args, **kwargs)
+
+
+# Ingredient entry model, my "it-will-work-for-now" method of getting
+# a 2-D array of ingredients and amounts in to the recipe class. The
+# IngredientEntry class contains a spot for an ingredient and a spot for
+# the amount. It will have a many-to-one relationship with a single recipe.
+# This is pretty inefficient but the django postgressQL array field type
+# does not allow relational entries as a base field. Eventually it would be good
+# to find a better way of storing this data.
+class RecipeEntry(models.Model):
+    amount = models.CharField(max_length = 30, blank=True)
+    ingredient = models.OneToOneField(Ingredient, null=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
