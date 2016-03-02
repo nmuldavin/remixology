@@ -1,6 +1,6 @@
 Cocktail
     Name
-    Recipes (a recipe can only belong to one cocktail)
+    Recipes
 
 Recipe
     Label
@@ -11,3 +11,8 @@ Recipe
     Notes
 
 Ingredient
+    Name
+    Type (from list of options)
+
+A recipe may only belong to one cocktail.
+An ingredient can belong to many recipes.
