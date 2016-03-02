@@ -30,3 +30,16 @@ class Ingredient(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Ingredient, self).save(*args, **kwargs)
+
+
+# Recipe model
+class Recipe(models.Model):
+    label = models.CharField(default='', max_length=100)
+    slug = models.SlugField(default='', blank=True)
+
+    def __str__(self):
+        return self.label
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.label)
+        super(Recipe, self).save(*args, **kwargs)
