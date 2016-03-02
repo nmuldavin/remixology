@@ -10,7 +10,8 @@ from django.db import models
 
 
 # Ingredient class, encompasing overall ingredient name. Each ingredient
-# can include as many individual ingredient instances as it wants.
+# includes many ingredient instances. Each ingredient instance is either of
+# type PurchasedIngredient or HomemadeIngredient.
 class Ingredient(models.Model):
 
     # from django examples. Fill in later with ingredient type choices,
@@ -32,6 +33,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(default='', blank=True)
     type = models.CharField(max_length=2, choices=MEDIA_CHOICES, blank=True)
+
     def __str__(self):
         return self.name
 
@@ -39,11 +41,15 @@ class Ingredient(models.Model):
         self.slug = slugify(self.name)
         super(Ingredient, self).save(*args, **kwargs)
 
+
+
+
 class IngredientInstance(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,)
 
     class Meta:
         abstract = True
+
 
 class PurchasedIngredient(IngredientInstance):
     product = models.CharField(default='', max_length = 100)
@@ -54,18 +60,32 @@ class PurchasedIngredient(IngredientInstance):
     def __str__(self):
         return self.ingredient.name + " - " + self.product
 
+class HomemadeIngredient(IngredientInstance):
+    recipes = models.ManyToManyField('Recipe')
+    id = models.AutoField(primary_key=True, unique=True)
+    defaultrecipe = models.IntegerField(null=True)
 
 
+
+# Recipes. There can be recipes for cocktails and recipes for ingredients
 class Recipe(models.Model):
-    name = models.CharField(max_length=50)
+    descriptor = models.CharField(default='', max_length=100)
     slug = models.SlugField(default='', blank=True)
+    ingredients = models.ManyToManyField(Ingredient)
 
     def __str__(self):
-        return self.name
+        return self.descriptor
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.descriptor)
         super(Recipe, self).save(*args, **kwargs)
+
+
+
+
+
+
+
 
 # cocktail class, containing a list of recipes, variations, and notes as well
 # as a log of each time the cocktail was made and in what context
