@@ -1,22 +1,13 @@
 from __future__ import unicode_literals
-
 from django.template.defaultfilters import slugify
-from django_measurement.models import MeasurementField
-from measurement.measures import Volume
 from django.db import models
 
 
-# Models, progressing bottom level to top level . . .
 
-
-# Ingredient class, encompasing overall ingredient name. Each ingredient
-# includes many ingredient instances. Each ingredient instance is either of
-# type PurchasedIngredient or HomemadeIngredient.
+# ingredient model. Contains a name and slug field
 class Ingredient(models.Model):
 
-    # from django examples. Fill in later with ingredient type choices,
-    # maybe take from pdt app or elsewhere. Investigate types and subtypes.
-    MEDIA_CHOICES = (
+    TYPE_CHOICES = (
         ('Audio', (
                 ('vinyl', 'Vinyl'),
                 ('cd', 'CD'),
@@ -30,9 +21,9 @@ class Ingredient(models.Model):
         ('unknown', 'Unknown'),
     )
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     slug = models.SlugField(default='', blank=True)
-    type = models.CharField(max_length=2, choices=MEDIA_CHOICES, blank=True)
+    type = models.CharField(max_length=2, choices=TYPE_CHOICES, blank=True)
 
     def __str__(self):
         return self.name
@@ -42,56 +33,37 @@ class Ingredient(models.Model):
         super(Ingredient, self).save(*args, **kwargs)
 
 
-
-
-class IngredientInstance(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,)
-
-    class Meta:
-        abstract = True
-
-
-class PurchasedIngredient(IngredientInstance):
-    product = models.CharField(default='', max_length = 100)
-    notes = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2, null=True)
-    volume = MeasurementField(measurement=Volume, null=True)
-
-    def __str__(self):
-        return self.ingredient.name + " - " + self.product
-
-class HomemadeIngredient(IngredientInstance):
-    recipes = models.ManyToManyField('Recipe')
-    id = models.AutoField(primary_key=True, unique=True)
-    defaultrecipe = models.IntegerField(null=True)
-
-
-
-# Recipes. There can be recipes for cocktails and recipes for ingredients
+# Recipe model
 class Recipe(models.Model):
-    descriptor = models.CharField(default='', max_length=100)
+    label = models.CharField(default='', max_length=100)
     slug = models.SlugField(default='', blank=True)
-    ingredients = models.ManyToManyField(Ingredient)
-
+    directions = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+    cocktail = models.ForeignKey('Cocktail', null=True)
     def __str__(self):
-        return self.descriptor
+        return self.label
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.descriptor)
+        self.slug = slugify(self.label)
         super(Recipe, self).save(*args, **kwargs)
 
 
+# Ingredient entry model, my "it-will-work-for-now" method of getting
+# a 2-D array of ingredients and amounts in to the recipe class. The
+# IngredientEntry class contains a spot for an ingredient and a spot for
+# the amount. It will have a many-to-one relationship with a single recipe.
+# This is pretty inefficient but the django postgressQL array field type
+# does not allow relational entries as a base field. Eventually it would be good
+# to find a better way of storing this data.
+class RecipeEntry(models.Model):
+    amount = models.CharField(max_length = 30, blank=True)
+    ingredient = models.OneToOneField(Ingredient, null=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 
-
-
-
-
-# cocktail class, containing a list of recipes, variations, and notes as well
-# as a log of each time the cocktail was made and in what context
 class Cocktail(models.Model):
-    name = models.CharField(max_length=50)
-    slug = models.SlugField(default='', blank=True)
+    name = models.CharField(default='', max_length=150)
+    slug = models.SlugField(default = '', blank = True)
 
     def __str__(self):
         return self.name
@@ -99,7 +71,3 @@ class Cocktail(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Cocktail, self).save(*args, **kwargs)
-
-
-
-

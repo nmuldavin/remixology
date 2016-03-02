@@ -1,39 +1,18 @@
 Cocktail
-  Name
-  Recipe (main)
-  Recipe (variations)
-  Logs
+    Name
+    Recipes
 
 Recipe
-  Ingredients, Amounts
-  Instructions
-  Notes
-  
-  Each recipe belongs to a specific ingredient or cocktail
-  Each ingredient may belong to any number of recipes
-  All fields are optional except name.
-
-  Ingredient
-  Name
-  Type?
-  Variations
-
-  Purchased Ingredient
-    Brand
-    Vintage?
-    Price
+    Label
+    Ingredients (array)
+        Amount (text at this point?)
+        Ingredient
+    Directions
     Notes
 
-  Homemade Ingredient
-    Recipe(main)
-    Recipe(variations)
-    Logs
+Ingredient
+    Name
+    Type (from list of options)
 
-
-    class PurchasedIngredient(IngredientInstance):
-    product = models.CharField(default = '', max_length = 100)
-    brand = models.CharField(default = '', max_length = 100)
-    url = models.URLField(default='')
-
-#class HomemadeIngredient(IngredientInstance):
- #   pass
+A recipe may only belong to one cocktail.
+An ingredient can belong to many recipes.
