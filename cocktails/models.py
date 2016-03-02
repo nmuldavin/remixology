@@ -37,7 +37,9 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     label = models.CharField(default='', max_length=100)
     slug = models.SlugField(default='', blank=True)
-
+    directions = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+    cocktail = models.ForeignKey('Cocktail', null=True)
     def __str__(self):
         return self.label
 
@@ -58,3 +60,14 @@ class RecipeEntry(models.Model):
     ingredient = models.OneToOneField(Ingredient, null=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+
+class Cocktail(models.Model):
+    name = models.CharField(default='', max_length=150)
+    slug = models.SlugField(default = '', blank = True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Cocktail, self).save(*args, **kwargs)
