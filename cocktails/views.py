@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views.generic import View
 from .models import Ingredient
 
@@ -19,4 +19,10 @@ class IngredientView(View):
             pass
 
         return render(request, 'cocktails/ingredient.html', ctx)
+
+class CocktailView(View):
+
+    def get(self, requesst, *args, **kwargs):
+
+        return HttpResponse('it worked')
 

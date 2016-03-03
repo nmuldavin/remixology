@@ -40,6 +40,8 @@ class Recipe(models.Model):
     directions = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     cocktail = models.ForeignKey('Cocktail', null=True)
+    index = models.IntegerField(default=0)
+
     def __str__(self):
         return self.label
 
@@ -56,6 +58,7 @@ class Recipe(models.Model):
 # does not allow relational entries as a base field. Eventually it would be good
 # to find a better way of storing this data.
 class RecipeEntry(models.Model):
+    rank = models.IntegerField(default=0)
     amount = models.CharField(max_length = 30, blank=True)
     ingredient = models.OneToOneField(Ingredient, null=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
