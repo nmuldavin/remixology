@@ -1,14 +1,18 @@
-Cocktail
+Recipe Group (will subclass to make cocktail and composite ingredient classes)
     Name
-    Recipes
+    Recipesm (Many)
 
 Recipe
     Label
-    Ingredients (array)
-        Amount (text at this point?)
-        Ingredient
+    Recipe Entries (Multiple)
     Directions
     Notes
+    index (orders recipes in recipe group)
+
+Recipe Entry
+    Amount (text for now)
+    Ingredient (one to one from ingredient table)
+    index (orders entries in recipe)
 
 Ingredient
     Name

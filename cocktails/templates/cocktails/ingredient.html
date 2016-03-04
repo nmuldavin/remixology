@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Ingredient</title>
+  </head>
+
+  <body>
+
+    {% if ingredient %}
+      <h1>{{ ingredient.name }}</h1>
+      <h2>Type: {{ ingredient.type }}</h2>
+    {% else %}
+      The specified ingredient does not exist!
+    {% endif %}
+
+  </body>
+
+</html>
