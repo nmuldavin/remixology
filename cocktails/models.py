@@ -39,8 +39,8 @@ class Recipe(models.Model):
     slug = models.SlugField(default='', blank=True)
     directions = models.TextField(blank=True)
     notes = models.TextField(blank=True)
-    cocktail = models.ForeignKey('Cocktail', null=True)
-    index = models.IntegerField(default=0)
+    cocktail = models.ForeignKey('cocktail', null=True, on_delete=models.CASCADE)
+    rank = models.IntegerField(default=1)
 
     def __str__(self):
         return self.label
@@ -64,13 +64,22 @@ class RecipeEntry(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 
-class Cocktail(models.Model):
+class RecipeGroup(models.Model):
     name = models.CharField(default='', max_length=150)
-    slug = models.SlugField(default = '', blank = True)
+    slug = models.SlugField(default='', blank = True)
+    type = models.CharField(default='cocktail', max_length=30)
+    description = models.TextField(max_length=140, blank=True)
+    notes = models.TextField(blank=True)
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Cocktail, self).save(*args, **kwargs)
+        super(RecipeGroup, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+class Cocktail(RecipeGroup):
+    pass
