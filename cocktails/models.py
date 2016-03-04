@@ -59,8 +59,8 @@ class Recipe(models.Model):
 # to find a better way of storing this data.
 class RecipeEntry(models.Model):
     rank = models.IntegerField(default=0)
-    amount = models.CharField(max_length = 30, blank=True)
-    ingredient = models.OneToOneField(Ingredient, null=True)
+    amount = models.CharField(max_length=30, blank=True)
+    ingredient = models.ForeignKey(Ingredient, null=True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
 
