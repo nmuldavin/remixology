@@ -5,6 +5,12 @@
   <head>
     <meta charset="utf-8">
     <title>Cocktail</title>
+    <style>
+      #recipe_container {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
   </head>
 
   <body>
@@ -12,17 +18,28 @@
     {% if group %}
       <h1>{{ group.name }}</h1>
       <h4>Description: {{ group.description }}</h4>
-      {% if recipe %}
+      <div id="recipe_container">
+        {% if recipe %}
         <h2>Recipe {{ recipe.rank }} - {{ recipe.label }}</h2>
         {% if ingredients %}
-          <ul>
-            {% for entry in ingredients %}
-              <li>{{ entry.amount }}   {{ entry.ingredient.name }}</li>
-            {% endfor %}
-          </ul>
+          <table class="table">
+            <thead>
+              <th>Amount</th>
+              <th>Ingredient</th>
+            </thead>
+            <tbody>
+              {% for entry in ingredients %}
+                <tr>
+                  <td>{{ entry.amount }}</td>
+                  <td>{{ entry.ingredient.name }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         {% else %}
           There are no ingredients in this recipe!
         {% endif %}
+      </div>
         <p>Directions: {{ recipe.directions }}</p>
         <p>Notes: {{ recipe.notes }}</p>
       {% else %}
@@ -31,7 +48,6 @@
     {% else %}
       The specified {{ type }} does not exist!
     {% endif %}
-
   </body>
 
 </html>
