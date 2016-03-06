@@ -7,13 +7,13 @@
         <th>Ingredient</th>
       </thead>
       <tbody>
-        {% for entry, boolean in ingredients %}
+        {% for entry in ingredients %}
           <tr class="recipe-entry">
-            <td class="entry-data" {% if not boolean.1 %}class="entry-data diff"{% else %}class="entry-data"{% endif %}>
-              {{ entry.amount }}{% if boolean.1 %}True{% endif %}
+            <td class="entry-data amount">
+              {{ entry.amount }}
             </td>
-            <td  {% if not boolean.2 %}class="entry-data diff"{% else %}class="entry-data"{% endif %}>
-              {{ entry.ingredient.name }}{% if boolean.2 %}True{% endif %}
+            <td class="entry-data ingredient">
+              {{ entry.ingredient.name }}
             </td>
           </tr>
         {% endfor %}
