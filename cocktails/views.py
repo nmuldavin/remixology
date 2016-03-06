@@ -58,6 +58,7 @@ class GetRecipe(View):
             rank = self.kwargs['rank']
             try:
                 recipe=Recipe.objects.get(cocktail=group, rank=rank)
+                standard=Recipe.objects.get(cocktail=group, rank=1)
                 print("Qoo")
                 ctx['recipe'] = recipe
                 print("Recipe: " + recipe.label)
@@ -66,9 +67,18 @@ class GetRecipe(View):
 
             try:
                 ingredients=RecipeEntry.objects.filter(recipe=recipe).order_by('rank')
-                ctx['ingredients'] = ingredients
-                for entry in ingredients:
+                standardingredients=RecipeEntry.objects.filter(recipe=standard).order_by('rank')
+                diffarray = []
+                for entry, standardentry in zip(ingredients, standardingredients):
+                    inner = []
+                    inner.append(entry.rank==standardentry.rank)
+                    inner.append(entry.amount==standardentry.amount)
+                    inner.append(entry.ingredient.name==standardentry.ingredient.name)
+                    print(inner)
                     print(str(entry.rank) + ": " + entry.amount + "  " + entry.ingredient.name)
+                    diffarray.append(inner)
+                zippedingredients = zip(ingredients, diffarray)
+                ctx['ingredients'] = zippedingredients
             except:
                 pass
 

@@ -11,6 +11,9 @@
         margin: 0px;
         padding: 0px;
       }
+      .diff {
+        background-color:cadetblue;
+      }
     </style>
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
     <script src="{% static 'cocktails/js/ajax.js' %}"></script>
@@ -24,7 +27,7 @@
       <h1>{{ group.name }}</h1>
       <h4>Description: {{ group.description }}</h4>
       <button id="previous">Previous</button><button id="next">Next</button>
-      <div id="recipe_container" data-group={{ group.slug }} data-rank=1>
+      <div id="recipe_container" data-group={{ group.slug }} data-rank=1!>
         {% with 'cocktails/recipe.html' as template %}
           {% include template %}
         {% endwith %}
