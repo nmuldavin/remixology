@@ -1,0 +1,26 @@
+{% if recipe %}
+  <button id="previous">Previous</button><button>Next</button id="next">
+  <h2>Recipe {{ recipe.rank }} - {{ recipe.label }}</h2>
+  {% if ingredients %}
+    <table class="table">
+      <thead>
+        <th>Amount</th>
+        <th>Ingredient</th>
+      </thead>
+      <tbody>
+        {% for entry in ingredients %}
+          <tr>
+            <td>{{ entry.amount }}</td>
+            <td>{{ entry.ingredient.name }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    There are no ingredients in this recipe!
+  {% endif %}
+  <p>Directions: {{ recipe.directions }}</p>
+  <p>Notes: {{ recipe.notes }}</p>
+{% else %}
+  There are no recipes for this {{ type }}!
+{% endif %}

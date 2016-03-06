@@ -56,3 +56,5 @@ class GroupView(View):
 
 
         return render(request, 'cocktails/recipegroup.html', ctx)
+
+
