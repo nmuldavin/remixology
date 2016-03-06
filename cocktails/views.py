@@ -37,8 +37,28 @@ class GroupView(View):
             except:
                 pass
 
+
+
+        return render(request, 'cocktails/recipegroup.html', ctx)
+
+class GetRecipe(View):
+
+    def get(self, request, *args, **kwargs):
+
+        ctx = {}
+        if 'cocktail_slug' in self.kwargs:
+            group_slug = self.kwargs['cocktail_slug']
             try:
-                recipe=Recipe.objects.get(cocktail=group, rank=1)
+                group = Cocktail.objects.get(slug=group_slug)
+                print("Cocktail: " + group.name)
+            except:
+                pass
+
+            print(group_slug)
+            rank = self.kwargs['rank']
+            try:
+                recipe=Recipe.objects.get(cocktail=group, rank=rank)
+                print("Qoo")
                 ctx['recipe'] = recipe
                 print("Recipe: " + recipe.label)
             except:
@@ -46,7 +66,6 @@ class GroupView(View):
 
             try:
                 ingredients=RecipeEntry.objects.filter(recipe=recipe).order_by('rank')
-                print("it worked")
                 ctx['ingredients'] = ingredients
                 for entry in ingredients:
                     print(str(entry.rank) + ": " + entry.amount + "  " + entry.ingredient.name)
@@ -54,7 +73,5 @@ class GroupView(View):
                 pass
 
 
-
-        return render(request, 'cocktails/recipegroup.html', ctx)
-
+        return render(request, 'cocktails/recipe.html', ctx)
 
