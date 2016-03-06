@@ -8,9 +8,9 @@
       </thead>
       <tbody>
         {% for entry in ingredients %}
-          <tr>
-            <td>{{ entry.amount }}</td>
-            <td>{{ entry.ingredient.name }}</td>
+          <tr class="recipe-entry">
+            <td class="entry-data">{{ entry.amount }}</td>
+            <td class="entry-data">{{ entry.ingredient.name }}</td>
           </tr>
         {% endfor %}
       </tbody>
