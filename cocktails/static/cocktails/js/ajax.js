@@ -2,7 +2,6 @@ $(document).ready(function() {
 
     var slug = $("#recipe_container").attr("data-group");
     var rank = parseInt($("#recipe_container").attr("data-rank"));
-    var current = [];
     var standard = [];
 
     function loadStandard() {
