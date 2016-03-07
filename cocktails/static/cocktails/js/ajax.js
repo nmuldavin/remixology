@@ -1,3 +1,5 @@
+
+
 $(document).ready(function() {
 
     var slug = $("#recipe_container").attr("data-group");
@@ -74,7 +76,6 @@ $(document).ready(function() {
 
 
     loadrecipe(slug, rank, true);
-
     $("#next").click(function() {
         rank = rank + 1;
         loadrecipe(slug, rank, false);
