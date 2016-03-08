@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Form</title>
+  </head>
+  <body>
+    <form id="cocktail_form" method="post">
+      {% csrf_token %}
+      {{ form.name }}
+      <h2><input type="submit" name="submit" value="Create Category" /></h2>
+    </form>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.views.generic import View
 from .models import *
+from .forms import CocktailForm
 
 class IngredientView(View):
 
@@ -71,3 +72,9 @@ class GetRecipe(View):
 
         return render(request, 'cocktails/recipe.html', ctx)
 
+class AddCocktail(View):
+
+    def get(self, request, *args, **kwargs):
+        form = CocktailForm()
+
+        return render(request, 'cocktails/addcocktail.html', {'form': form})
