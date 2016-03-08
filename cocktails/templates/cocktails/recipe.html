@@ -1,27 +1,30 @@
 {% if recipe %}
   <h2>Recipe {{ recipe.rank }} - {{ recipe.label }}</h2>
   {% if ingredients %}
-    <table class="table">
-      <thead>
-        <th>Amount</th>
-        <th>Ingredient</th>
-      </thead>
-      <tbody>
-        {% for entry in ingredients %}
-          <tr class="recipe-entry">
-            <td class="entry-data amount">
-              {{ entry.amount }}
-            </td>
-            <td class="entry-data ingredient">
-              {{ entry.ingredient.name }}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div id="recipe-table-container">
+      <table class="table">
+        <thead>
+          <th>Amount</th>
+          <th>Ingredient</th>
+        </thead>
+        <tbody id="recipe-body">
+          {% for entry in ingredients %}
+            <tr class="recipe-entry">
+              <td class="entry-data amount">
+                {{ entry.amount }}
+              </td>
+              <td class="entry-data ingredient">
+                {{ entry.ingredient.name }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
     There are no ingredients in this recipe!
   {% endif %}
+
   <p>Directions: {{ recipe.directions }}</p>
   <p>Notes: {{ recipe.notes }}</p>
 {% else %}
