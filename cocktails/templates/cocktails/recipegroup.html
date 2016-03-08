@@ -6,7 +6,7 @@
 
   <head>
     <meta charset="utf-8">
-    <link rel='stylesheet' type='text/css' href="{% static 'cocktails/css/recipegroup.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
     <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
 
@@ -19,7 +19,7 @@
       <h1>{{ group.name }}</h1>
       <h4>Description: {{ group.description }}</h4>
       <button id="previous">Previous</button><button id="next">Next</button>
-      <div id="recipe_container" data-group={{ group.slug }} data-rank=1!>
+      <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
         {% with 'cocktails/recipe.html' as template %}
           {% include template %}
         {% endwith %}

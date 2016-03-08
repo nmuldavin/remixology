@@ -33,6 +33,8 @@ class GroupView(View):
             try:
                 group = Cocktail.objects.get(slug=group_slug)
                 ctx['group'] = group
+                recipes = Recipe.objects.filter(cocktail=group).count()
+                ctx['recipes'] = recipes
             except:
                 pass
 
@@ -49,25 +51,19 @@ class GetRecipe(View):
             group_slug = self.kwargs['cocktail_slug']
             try:
                 group = Cocktail.objects.get(slug=group_slug)
-                print("Cocktail: " + group.name)
             except:
                 pass
 
-            print(group_slug)
             rank = self.kwargs['rank']
             try:
                 recipe=Recipe.objects.get(cocktail=group, rank=rank)
-                print("Qoo")
                 ctx['recipe'] = recipe
-                print("Recipe: " + recipe.label)
             except:
                 pass
 
             try:
                 ingredients=RecipeEntry.objects.filter(recipe=recipe).order_by('rank')
                 ctx['ingredients'] = ingredients
-                for entry in ingredients:
-                    print(str(entry.rank) + ": " + entry.amount + "  " + entry.ingredient.name)
 
             except:
                 pass

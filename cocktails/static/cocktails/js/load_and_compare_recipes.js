@@ -95,17 +95,30 @@ function compareRecipeTo(standard) {
 
 $(document).ready(function() {
     var slug = document.getElementById('recipe_container').getAttribute('data-group');
+    var recipes = document.getElementById('recipe_container').getAttribute('data-recipes');
     var rank = 1;
     var standard=[];
 
+    if(rank >= recipes) {
+        $("#next").css('visibility','hidden');
+    }
+    if(rank <= 1) {
+        $("#previous").css('visibility','hidden');
+    }
+
     loadRecipe(slug, rank, function() {
         standard = saveStandardRecipe();
+        recipes = document.getElementById('recipe_container').getAttribute('data-recipes');
     });
 
     $("#next").click(function() {
         rank = rank + 1;
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
+            $("#previous").css('visibility','visible');
+            if(rank >= recipes) {
+                $("#next").css('visibility','hidden');
+            }
         });
     });
 
@@ -113,6 +126,10 @@ $(document).ready(function() {
         rank = rank - 1;
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
+            $("#next").css('visibility','visible');
+            if(rank <= 1) {
+                $("#previous").css('visibility','hidden');
+            }
         });
     });
 
