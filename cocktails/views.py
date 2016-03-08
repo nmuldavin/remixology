@@ -33,7 +33,6 @@ class GroupView(View):
             try:
                 group = Cocktail.objects.get(slug=group_slug)
                 ctx['group'] = group
-                print("Cocktail: " + group.name)
             except:
                 pass
 

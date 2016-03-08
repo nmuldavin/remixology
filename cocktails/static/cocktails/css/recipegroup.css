@@ -1,0 +1,10 @@
+#recipe_container {
+        margin: 0px;
+        padding: 0px;
+      }
+      .diff {
+        background-color:cadetblue;
+      }
+      p.tiny {
+        font-size:xx-small;
+      }
