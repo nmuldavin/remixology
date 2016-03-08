@@ -69,6 +69,7 @@ class GetRecipe(View):
                 ctx['ingredients'] = ingredients
                 for entry in ingredients:
                     print(str(entry.rank) + ": " + entry.amount + "  " + entry.ingredient.name)
+
             except:
                 pass
 
