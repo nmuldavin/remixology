@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 <html>
 
@@ -13,6 +14,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
     <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+    <style>
+      .form_inherit {
+        font-family : inherit;
+        font-size: 100%;
+        -webkit-box-sizing: border-box; /* For legacy WebKit based browsers */
+            -moz-box-sizing: border-box; /* For legacy (Firefox <29) Gecko based browsers */
+                  box-sizing: border-box;
+      }
+      .char_field:focus {
+        outline:none;
+}
+    </style>
     <title>Cocktail</title>
   </head>
 
@@ -20,7 +33,7 @@
 
     <form id="cocktail_form" method="post">
       {% csrf_token %}
-      <h1 id="shit">{{ form.name }}</h1>
+      <h1>{{ form.name|add_class:"form_inherit char_field" }}</h1>
       <input type="submit" name="submit" value="Create Category" />
     </form>
 
