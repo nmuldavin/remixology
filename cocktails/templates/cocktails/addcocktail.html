@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 
+{% load staticfiles %}
+
 <html>
+
   <head>
-    <title>Form</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
+    <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
+    <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+    <title>Cocktail</title>
   </head>
-  <style>
-    input {
-      font-family: inherit;
-      font-size: 100%;
-    }
-  </style>
+
   <body>
+
     <form id="cocktail_form" method="post">
       {% csrf_token %}
-      {{ form.name }}
-      <h1><input type="submit" name="submit" value="Create Category" /></h1>
+      <h1 id="shit">{{ form.name }}</h1>
+      <input type="submit" name="submit" value="Create Category" />
     </form>
+
+    <script src="{% static 'cocktails/bootstrap/js/bootstrap.min.js' %}"></script>
   </body>
+
 </html>
