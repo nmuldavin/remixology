@@ -8,3 +8,7 @@
       p.tiny {
         font-size:xx-small;
       }
+
+      p#groupdescription {
+        font-weight: bold;
+      }

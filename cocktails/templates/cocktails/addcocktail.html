@@ -22,10 +22,6 @@
         background-color: beige;
       }
 
-      p#groupdescription {
-        font-weight: bold;
-      }
-
     </style>
 {% endblock %}
 
@@ -35,6 +31,9 @@
     <form id="cocktail_form" method="post" action="/addcocktail/">
       {% csrf_token %}
       {{ form.non_field_errors }}
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
       <h1 id="groupname">
         {{ form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>
