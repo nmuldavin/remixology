@@ -7,22 +7,7 @@
 
 {% block headlast %}
   <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
-  <style>
-      .form_inherit {
-        font-family : inherit;
-        font-size: 100%;
-        width: 100%;
-      }
-
-      .char_field {
-        border:none;
-      }
-      .char_field:focus, .char_field:hover{
-        outline:none;
-        background-color: beige;
-      }
-
-    </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/cocktailform.css' %}">
 {% endblock %}
 
 {% block title %}New Cocktail{% endblock %}
@@ -30,22 +15,23 @@
 {% block bodyblock %}
     <form id="cocktail_form" method="post" action="/addcocktail/">
       {% csrf_token %}
-      {{ form.non_field_errors }}
-      {% for hidden in form.hidden_fields %}
+      {{ cocktailform.non_field_errors }}
+      {% for hidden in cocktailform.hidden_fields %}
         {{ hidden }}
       {% endfor %}
       <h1 id="groupname">
-        {{ form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
+        {{ cocktailform.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>
 
-      {{ form.name.errors }}
+      {{ cocktailform.name.errors }}
 
 
 
       <p id="groupdescription">
-        {{ form.description.errors }}
-        {{ form.description|add_class:"form_inherit char_field"|attr:"rows:2"}}
+        {{ cocktailform.description.errors }}
+        {{ cocktailform.description|add_class:"form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
       </p>
+    
       <input type="submit" name="submit" value="Create Category" />
     </form>
 

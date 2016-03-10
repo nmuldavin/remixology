@@ -52,6 +52,9 @@ class Recipe(models.Model):
     cocktail = models.ForeignKey('cocktail', null=True, on_delete=models.CASCADE)
     rank = models.IntegerField(default=1)
 
+    class Meta:
+        unique_together = ('cocktail', 'rank')
+
     def __str__(self):
         return self.label
 
