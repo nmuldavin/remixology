@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View
 from .models import *
 from .forms import CocktailForm
@@ -31,6 +31,7 @@ class GroupView(View):
         if 'cocktail_slug' in self.kwargs:
             group_slug = self.kwargs['cocktail_slug']
             ctx['type'] = 'cocktail'
+            print('GotHere')
             try:
                 group = Cocktail.objects.get(slug=group_slug)
                 ctx['group'] = group
@@ -78,3 +79,22 @@ class AddCocktail(View):
         form = CocktailForm()
 
         return render(request, 'cocktails/addcocktail.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = CocktailForm(request.POST)
+
+        if form.is_valid():
+
+            cocktail = form.save(commit=True)
+            cocktail.type = 'cocktial'
+            cocktail.save()
+
+            return redirect ('cocktails:cocktail', cocktail_slug=cocktail.slug)
+
+        else:
+            print form.errors
+
+        return render(request, 'cocktails/addcocktail.html', {'form': form})
+
+
+

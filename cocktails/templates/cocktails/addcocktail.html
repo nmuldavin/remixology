@@ -32,13 +32,16 @@
 {% block title %}New Cocktail{% endblock %}
 
 {% block bodyblock %}
-    <form id="cocktail_form" method="post">
+    <form id="cocktail_form" method="post" action="/addcocktail/">
       {% csrf_token %}
       {{ form.non_field_errors }}
       <h1 id="groupname">
-        {{ form.name.errors }}
         {{ form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
-      </h1 id=>
+      </h1>
+
+      {{ form.name.errors }}
+
+
 
       <p id="groupdescription">
         {{ form.description.errors }}
