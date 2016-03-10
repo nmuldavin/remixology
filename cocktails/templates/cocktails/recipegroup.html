@@ -1,38 +1,30 @@
-<!DOCTYPE html>
+{% extends 'cocktails/base.html' %}
 
 {% load staticfiles %}
 
-<html>
+{% block headfirst %}{% endblock %}
 
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% block headlast %}
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
+{% endblock %}
 
-    <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
-    <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
-    <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+{% block title %}{{ group.name }}{% endblock %}
 
-    <title>Cocktail</title>
-  </head>
+{% block bodyblock %}
+  {% if group %}
+    <h1 id="groupname">{{ group.name }}</h1>
+    <p id="groupdescription">Description: {{ group.description }}</p>
+    <button id="previous">Previous</button><button id="next">Next</button>
+    <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
+      {% with 'cocktails/recipe.html' as template %}
+        {% include template %}
+      {% endwith %}
+    </div>
+  {% else %}
+    The specified {{ type }} does not exist!
+  {% endif %}
+{% endblock %}
 
-  <body>
-
-    {% if group %}
-      <h1>{{ group.name }}</h1>
-      <h4>Description: {{ group.description }}</h4>
-      <button id="previous">Previous</button><button id="next">Next</button>
-      <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
-        {% with 'cocktails/recipe.html' as template %}
-          {% include template %}
-        {% endwith %}
-      </div>
-    {% else %}
-      The specified {{ type }} does not exist!
-    {% endif %}
-
-    <script src="{% static 'cocktails/bootstrap/js/bootstrap.min.js' %}"></script>
-  </body>
-
-</html>
+{% block scripts %}
+  <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+{% endblock %}

@@ -1,43 +1,54 @@
-<!DOCTYPE html>
+{% extends 'cocktails/base.html' %}
 
 {% load staticfiles %}
 {% load widget_tweaks %}
 
-<html>
+{% block headfirst %}{% endblock %}
 
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
-    <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
-    <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
-    <style>
+{% block headlast %}
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
+  <style>
       .form_inherit {
         font-family : inherit;
         font-size: 100%;
-        -webkit-box-sizing: border-box; /* For legacy WebKit based browsers */
-            -moz-box-sizing: border-box; /* For legacy (Firefox <29) Gecko based browsers */
-                  box-sizing: border-box;
+        width: 100%;
       }
-      .char_field:focus {
+
+      .char_field {
+        border:none;
+      }
+      .char_field:focus, .char_field:hover{
         outline:none;
-}
+        background-color: beige;
+      }
+
+      p#groupdescription {
+        font-weight: bold;
+      }
+
     </style>
-    <title>Cocktail</title>
-  </head>
+{% endblock %}
 
-  <body>
+{% block title %}New Cocktail{% endblock %}
 
+{% block bodyblock %}
     <form id="cocktail_form" method="post">
       {% csrf_token %}
-      <h1>{{ form.name|add_class:"form_inherit char_field" }}</h1>
+      {{ form.non_field_errors }}
+      <h1 id="groupname">
+        {{ form.name.errors }}
+        {{ form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
+      </h1 id=>
+
+      <p id="groupdescription">
+        {{ form.description.errors }}
+        {{ form.description|add_class:"form_inherit char_field"|attr:"rows:2"}}
+      </p>
       <input type="submit" name="submit" value="Create Category" />
     </form>
 
-    <script src="{% static 'cocktails/bootstrap/js/bootstrap.min.js' %}"></script>
-  </body>
+{% endblock %}
 
-</html>
+{% block scripts %}
+  <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+{% endblock %}
