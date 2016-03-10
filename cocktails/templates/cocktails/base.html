@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Block to input stylesheets and scripts that should be overridden by defaults (bootstrap, etc -->
+    {% block headfirst %}{% endblock %}
+
+    <!-- Default stylesheets -->
+    <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Block to input stylesheets and scripts that override defaults (bootstrap, etc -->
+    {% block headlast %}{% endblock %}
+    <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
+    <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+
+    <!-- Title -->
+    <title>Remixology: {% block title %}{% endblock %}</title>
+
+  </head>
+
+  <body>
+    <!-- Main Content -->
+    {% block bodyblock %}{% endblock %}
+
+    <!-- Standard Scripts -->
+    <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
+    <script src="{% static 'cocktails/bootstrap/js/bootstrap.min.js' %}"></script>
+    {% block scripts %}{% endblock %}
+  </body>
+
+</html>

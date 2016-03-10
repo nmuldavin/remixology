@@ -1,6 +1,7 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View
 from .models import *
+from .forms import CocktailForm
 
 class IngredientView(View):
 
@@ -30,10 +31,12 @@ class GroupView(View):
         if 'cocktail_slug' in self.kwargs:
             group_slug = self.kwargs['cocktail_slug']
             ctx['type'] = 'cocktail'
+            print('GotHere')
             try:
                 group = Cocktail.objects.get(slug=group_slug)
                 ctx['group'] = group
-                print("Cocktail: " + group.name)
+                recipes = Recipe.objects.filter(cocktail=group).count()
+                ctx['recipes'] = recipes
             except:
                 pass
 
@@ -50,29 +53,48 @@ class GetRecipe(View):
             group_slug = self.kwargs['cocktail_slug']
             try:
                 group = Cocktail.objects.get(slug=group_slug)
-                print("Cocktail: " + group.name)
             except:
                 pass
 
-            print(group_slug)
             rank = self.kwargs['rank']
             try:
                 recipe=Recipe.objects.get(cocktail=group, rank=rank)
-                print("Qoo")
                 ctx['recipe'] = recipe
-                print("Recipe: " + recipe.label)
             except:
                 pass
 
             try:
                 ingredients=RecipeEntry.objects.filter(recipe=recipe).order_by('rank')
                 ctx['ingredients'] = ingredients
-                for entry in ingredients:
-                    print(str(entry.rank) + ": " + entry.amount + "  " + entry.ingredient.name)
 
             except:
                 pass
 
 
         return render(request, 'cocktails/recipe.html', ctx)
+
+class AddCocktail(View):
+
+    def get(self, request, *args, **kwargs):
+        form = CocktailForm()
+
+        return render(request, 'cocktails/addcocktail.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = CocktailForm(request.POST)
+
+        if form.is_valid():
+
+            cocktail = form.save(commit=True)
+            cocktail.type = 'cocktial'
+            cocktail.save()
+
+            return redirect ('cocktails:cocktail', cocktail_slug=cocktail.slug)
+
+        else:
+            print form.errors
+
+        return render(request, 'cocktails/addcocktail.html', {'form': form})
+
+
 
