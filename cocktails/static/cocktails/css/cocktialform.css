@@ -1,0 +1,13 @@
+.form_inherit {
+    font-family : inherit;
+    font-size: 100%;
+    width: 100%;
+}
+
+.char_field {
+    border:none;
+}
+.char_field:focus, .char_field:hover{
+    outline:none;
+    background-color: beige;
+}

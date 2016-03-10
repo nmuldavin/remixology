@@ -13,7 +13,7 @@
 {% block bodyblock %}
   {% if group %}
     <h1 id="groupname">{{ group.name }}</h1>
-    <p id="groupdescription">Description: {{ group.description }}</p>
+    <p id="groupdescription">{{ group.description }}</p>
     <button id="previous">Previous</button><button id="next">Next</button>
     <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
       {% with 'cocktails/recipe.html' as template %}

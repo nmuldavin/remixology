@@ -65,7 +65,7 @@ class RecipeEntry(models.Model):
 
 
 class RecipeGroup(models.Model):
-    name = models.CharField(default='', max_length=150, unique=True, error_messages={'unique':"This name is already in use! Choose another?"})
+    name = models.CharField(default='', max_length=150, unique=True)
     slug = models.SlugField(default='', blank = True, unique=True)
     type = models.CharField(default='cocktail', max_length=30)
     description = models.TextField(max_length=140, blank=True)
