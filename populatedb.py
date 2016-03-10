@@ -22,7 +22,7 @@ def AddRecipe(group, label, directions, notes, rank):
     return r
 
 def AddEntry(recipe, rank, amount, ingredient):
-    e = RecipeEntry.objects.get_or_create(recipe = recipe, rank=rank)[0]
+    e = Entry.objects.get_or_create(recipe = recipe, rank=rank)[0]
     e.amount = amount
     e.ingredient = ingredient
     e.save()

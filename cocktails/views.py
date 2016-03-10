@@ -5,8 +5,6 @@ from .forms import CocktailForm
 
 class IngredientView(View):
 
-
-
     def get(self, request, *args, **kwargs):
 
         ctx = {}
@@ -31,7 +29,6 @@ class GroupView(View):
         if 'cocktail_slug' in self.kwargs:
             group_slug = self.kwargs['cocktail_slug']
             ctx['type'] = 'cocktail'
-            print('GotHere')
             try:
                 group = Cocktail.objects.get(slug=group_slug)
                 ctx['group'] = group
@@ -64,7 +61,7 @@ class GetRecipe(View):
                 pass
 
             try:
-                ingredients=RecipeEntry.objects.filter(recipe=recipe).order_by('rank')
+                ingredients=Entry.objects.filter(recipe=recipe).order_by('rank')
                 ctx['ingredients'] = ingredients
 
             except:

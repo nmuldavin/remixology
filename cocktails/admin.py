@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ingredient, Recipe, RecipeEntry, Cocktail
+from .models import Ingredient, Recipe, Entry, Cocktail
 
 
 
@@ -11,16 +11,15 @@ class IngredientInLine(admin.TabularInline):
     model = Ingredient
     prepopulated_fields = {"slug": ("name",)}
 
-class RecipeEntryInLine(admin.TabularInline):
-    model = RecipeEntry
+class EntryInLine(admin.TabularInline):
+    model = Entry
     inlines = [
         IngredientInLine
     ]
 
 class RecipeAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("label",)}
     inlines = [
-        RecipeEntryInLine,
+        EntryInLine,
     ]
 
 class CocktailAdmin(admin.ModelAdmin):
