@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View
 from .models import *
-from .forms import CocktailForm, RecipeForm
+from .forms import *
+from django.template import RequestContext
 
 class IngredientView(View):
 
@@ -98,7 +99,11 @@ class AddRecipe(View):
 
     def get(self, request, *args, **kwargs):
         recipeform = RecipeForm()
+        entry_formset = EntryFormSet(instance=Recipe())
+        return render(request, 'cocktails/recipeform.html', {
+            'recipeform': recipeform,
+            "entry_formset" : entry_formset
+        }, context_instance=RequestContext(request))
 
-        return render(request, 'cocktails/recipeform.html', {'recipeform': recipeform})
 
 
