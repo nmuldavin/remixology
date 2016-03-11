@@ -1,1 +1,23 @@
-{{ recipeform.label }}
+{% load widget_tweaks %}
+
+<h2>
+  <table>
+    <tr>
+      <td>Recipe 1 - </td>
+      <td>{{ recipeform.label|add_class:"form_inherit char_field recipe_label"|attr:"placeholder:Recipe Label" }}</td>
+    </tr>
+  </table>
+</h2>
+
+{{ recipeform.errors }}
+
+<p id="recipe_directions">
+  {{ recipeform.directions.errors }}
+  {{ recipeform.directions|add_class:"form_inherit char_field"|attr:"rows:4"|attr:"placeholder:Directions . . . "}}
+</p>
+
+<h4>Notes</h4>
+<p id="recipe_directions">
+  {{ recipeform.directions.errors }}
+  {{ recipeform.directions|add_class:"form_inherit char_field"|attr:"rows:4"|attr:"placeholder:Notes . . . "}}
+</p>

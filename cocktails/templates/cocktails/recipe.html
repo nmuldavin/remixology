@@ -1,5 +1,12 @@
 {% if recipe %}
-  <h2>Recipe {{ recipe.rank }} - {{ recipe.label }}</h2>
+  <h2>
+    <table>
+      <tr>
+        <td>Recipe {{ recipe.rank }}:&nbsp</td>
+        <td>{{ recipe.label }}</td>
+      </tr>
+    </table>
+  </h2>
   {% if ingredients %}
     <div id="recipe-table-container">
       <table class="table">
@@ -25,8 +32,9 @@
     There are no ingredients in this recipe!
   {% endif %}
 
-  <p>Directions: {{ recipe.directions }}</p>
-  <p>Notes: {{ recipe.notes }}</p>
+  <p id="recipe_directions">{{ recipe.directions }}</p>
+  <h4>Notes:</h4>
+  <p id="recipe_notes">{{ recipe.notes }}</p>
 {% else %}
   You haven't added any recipes yet!
 {% endif %}
