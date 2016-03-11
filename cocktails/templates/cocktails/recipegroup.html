@@ -14,7 +14,9 @@
   {% if group %}
     <h1 id="groupname">{{ group.name }}</h1>
     <p id="groupdescription">{{ group.description }}</p>
-    <button id="previous">Previous</button><button id="next">Next</button>
+    <button class="btn" id="previous">Previous</button>
+    <button class="btn" id="next">Next</button>
+    <button class="btn" id="add_recipe">Add another</button>
     <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
       {% with 'cocktails/recipe.html' as template %}
         {% include template %}

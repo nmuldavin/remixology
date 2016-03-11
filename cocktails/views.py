@@ -74,16 +74,16 @@ class AddCocktail(View):
 
     def get(self, request, *args, **kwargs):
         cocktailform = CocktailForm()
-        recipeform = RecipeForm()
 
-        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform, 'recipeform': recipeform})
+        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
 
     def post(self, request, *args, **kwargs):
-        form = CocktailForm(request.POST)
+        cocktailform = CocktailForm(request.POST)
 
-        if form.is_valid():
 
-            cocktail = form.save(commit=True)
+        if cocktailform.is_valid():
+
+            cocktail = cocktailform.save(commit=True)
             cocktail.type = 'cocktial'
             cocktail.save()
 
@@ -92,7 +92,13 @@ class AddCocktail(View):
         else:
             print form.errors
 
-        return render(request, 'cocktails/addcocktail.html', {'form': form})
+        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
 
+class AddRecipe(View):
+
+    def get(self, request, *args, **kwargs):
+        recipeform = RecipeForm()
+
+        return render(request, 'cocktails/recipeform.html', {'recipeform': recipeform})
 
 

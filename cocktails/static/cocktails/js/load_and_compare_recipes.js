@@ -13,6 +13,16 @@ function loadRecipe(slug, rank, callback) {
     });
 }
 
+function loadRecipeForm(slug, rank, callback) {
+    $("#recipe_container").html('').load(
+    '/cocktails/'+ slug + '/' + String(rank), function() {
+            console.log("Loaded recipe " + rank)
+        if(callback) {
+            callback();
+        }
+    });
+}
+
 // saveStandardRecipe reads the page HTML to build a table of recipe
 // entry objects from the standard recipe (the default with rank=1) so
 // that other recipes can be compared later.
