@@ -14,7 +14,7 @@
 {% block title %}New Cocktail{% endblock %}
 
 {% block bodyblock %}
-    <form id="cocktail_form" method="post" action="/addcocktail/">
+    <form id="cocktail_form" method="post" action="/cocktails/addcocktail/">
       {% csrf_token %}
       {{ cocktailform.non_field_errors }}
       {% for hidden in cocktailform.hidden_fields %}

@@ -74,36 +74,60 @@ class GetRecipe(View):
 class AddCocktail(View):
 
     def get(self, request, *args, **kwargs):
-        cocktailform = CocktailForm()
+        cocktailform = CocktailForm(prefix='cocktail_form')
 
         return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
 
     def post(self, request, *args, **kwargs):
-        cocktailform = CocktailForm(request.POST)
-
+        cocktailform = CocktailForm(request.POST, prefix='cocktail_form')
 
         if cocktailform.is_valid():
 
             cocktail = cocktailform.save(commit=True)
             cocktail.type = 'cocktial'
             cocktail.save()
-
+            AddRecipe.as_view()(self.request, **{'cocktail':cocktail})
             return redirect ('cocktails:cocktail', cocktail_slug=cocktail.slug)
 
         else:
-            print form.errors
+            print cocktailform.errors
 
         return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
 
 class AddRecipe(View):
 
     def get(self, request, *args, **kwargs):
-        recipeform = RecipeForm()
-        entry_formset = EntryFormSet(instance=Recipe())
+        recipeform = RecipeForm(prefix='recipe_form')
+        entry_formset = EntryFormSet(instance=Recipe(), prefix='entry_formset')
         return render(request, 'cocktails/recipeform.html', {
             'recipeform': recipeform,
             "entry_formset" : entry_formset
-        }, context_instance=RequestContext(request))
+        })
+        #return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})
+
+    def post(self, request, *args, **kwargs):
+        # get and save recipe form
+        recipeform = RecipeForm(request.POST, prefix='recipe_form')
+        recipe=recipeform.save(commit=False)
+        # get cocktail reference form kwargs:
+        if 'cocktail' in self.kwargs:
+            cocktail = self.kwargs['cocktail']
+            recipe.cocktail = cocktail
+        else:
+            return HttpResponse('Error: recipe not assigned to a group object.')
+
+        if 'rank' in self.kwargs:
+            recipe.rank= int(self.kwargs['rank'])
+
+        recipe.save()
+
+        entry_formset = EntryFormSet(request.POST, instance=recipe, prefix='entry_formset')
+        #entries = entry_formset.save(commit=False)
+        print(entry_formset)
+
+
+        return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})
+
 
 
 

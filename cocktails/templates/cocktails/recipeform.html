@@ -17,6 +17,8 @@
       <th>Ingredient</th>
     </thead>
     <tbody id="recipe-body">
+      {{ entry_formset.management_form }}
+      {{ entry_formset.non_form_errors }}
       {% for entry in entry_formset %}
         <tr class="recipe-entry">
           <td class="entry-data amount">

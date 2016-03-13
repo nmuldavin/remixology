@@ -23,19 +23,15 @@ class CocktailForm (forms.ModelForm):
         exclude = ('slug', 'type')
 
 class EntryForm (forms.ModelForm):
-    amount = forms.CharField()
-    ingredient = forms.CharField()
     class Meta:
+        model = Entry
         exclude = ('rank', 'recipe')
 
 EntryFormSet = inlineformset_factory(Recipe,
                                      Entry,
                                      form=EntryForm,
-                                     fields=('amount', 'ingredient',),
                                      can_delete=False,
-                                     extra=5)
-
-
+                                     extra=1)
 
 class RecipeForm (forms.ModelForm):
 
