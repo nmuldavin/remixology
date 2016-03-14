@@ -16,19 +16,19 @@
 {% block bodyblock %}
     <form id="cocktail_form" method="post" action="/cocktails/addcocktail/">
       {% csrf_token %}
-      {{ cocktailform.non_field_errors }}
-      {% for hidden in cocktailform.hidden_fields %}
+      {{ cocktail_form.non_field_errors }}
+      {% for hidden in cocktail_form.hidden_fields %}
         {{ hidden }}
       {% endfor %}
       <h1 id="groupname">
-        {{ cocktailform.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
+        {{ cocktail_form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>
 
-      {{ cocktailform.name.errors }}
+      {{ cocktail_form.name.errors }}
 
       <p id="groupdescription">
-        {{ cocktailform.description.errors }}
-        {{ cocktailform.description|add_class:"form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
+        {{ cocktail_form.description.errors }}
+        {{ cocktail_form.description|add_class:"form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
       </p>
       <div id="recipe_container">
         {% with 'cocktails/recipeform.html' as template %}

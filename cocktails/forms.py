@@ -26,21 +26,20 @@ class CocktailForm (forms.ModelForm):
 
 class EntryForm (forms.Form):
     amount = forms.CharField(required=False)
-    ingredient = forms.CharField()
+    ingredient = forms.CharField(required=True)
 
-    def clean(self):
-        cleaned_data = super(EntryForm, self).clean()
-        amount = cleaned_data.get('amount')
 
-        return cleaned_data
+
 
     class Meta:
         fields = ('amount', 'ingredient')
 
 
 EntryFormSet = formset_factory(EntryForm,
+                                min_num=2,
+                                validate_min=True,
                                 can_delete=False,
-                                extra=2)
+                                extra=0)
 
 class RecipeForm (forms.ModelForm):
 

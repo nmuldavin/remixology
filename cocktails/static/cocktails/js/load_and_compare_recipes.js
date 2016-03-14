@@ -105,9 +105,9 @@ function compareRecipeTo(standard) {
 
 $(document).ready(function() {
     var slug = document.getElementById('recipe_container').getAttribute('data-group');
-    var recipes = document.getElementById('recipe_container').getAttribute('data-recipes');
-    var rank = 1;
-    var standard=[];
+    var recipes = parseInt(document.getElementById('recipe_container').getAttribute('data-recipes'));
+    var rank = parseInt(document.getElementById('recipe_container').getAttribute('data-reciperank'));
+    var standard = saveStandardRecipe();
 
     if(rank >= recipes) {
         $("#next").css('visibility','hidden');
@@ -116,10 +116,6 @@ $(document).ready(function() {
         $("#previous").css('visibility','hidden');
     }
 
-    loadRecipe(slug, rank, function() {
-        standard = saveStandardRecipe();
-        recipes = document.getElementById('recipe_container').getAttribute('data-recipes');
-    });
 
     $("#next").click(function() {
         rank = rank + 1;
