@@ -15,8 +15,8 @@ function loadRecipe(slug, rank, callback) {
 
 function loadRecipeForm(slug, rank, callback) {
     $("#recipe_container").html('').load(
-    '/cocktails/'+ slug + '/' + String(rank), function() {
-        console.log("Loaded recipe " + rank);
+    '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
+        console.log("Loaded recipe form " + rank);
         if(callback) {
             callback();
         }
@@ -138,5 +138,14 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#add_recipe").click(function() {
+        rank = recipes + 1;
+        loadRecipeForm(slug, rank, function() {
+            $("#add_recipe").css('visibility', 'hidden');
+            $("#previous").css('visibility','hidden');
+            $("#next").css('visibility','hidden');
+        })
+    })
 
 });

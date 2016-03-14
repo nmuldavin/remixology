@@ -1,6 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View
-from django.template.defaultfilters import slugify
 from .models import *
 from .forms import *
 from django.template import RequestContext
@@ -152,6 +151,7 @@ class AddCocktail(View):
     def get(self, request, *args, **kwargs):
 
         ctx = {}
+        ctx['rank'] = 1
         cocktail_form = CocktailForm(prefix='cocktail_form')
         ctx['cocktail_form'] = cocktail_form
 
@@ -198,74 +198,48 @@ class AddCocktail(View):
 class AddRecipe(View):
 
     def get(self, request, *args, **kwargs):
-        recipeform = RecipeForm(prefix='recipe_form')
+
+        ctx = {}
+
+        cocktail_slug = self.kwargs['cocktail_slug']
+        ctx['cocktail_slug'] = cocktail_slug
+
+        rank = int(self.kwargs['rank'])
+        ctx['rank'] = rank
+
+        recipe_form = RecipeForm(prefix='recipe_form')
+        ctx['recipe_form'] = recipe_form
+
         entry_formset = EntryFormSet(prefix='entry_formset')
-        return render(request, 'cocktails/recipeform.html', {
-            'recipeform': recipeform,
-            "entry_formset" : entry_formset
-        })
-        #return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})
+        ctx['entry_formset'] = entry_formset
 
-
+        return render(request, 'cocktails/recipe_form.html', ctx)
 
     def post(self, request, *args, **kwargs):
-        # get and save recipe form
-        recipeform = RecipeForm(request.POST, prefix='recipe_form')
+
+        recipe_form = RecipeForm(request.POST, prefix='recipe_form')
         entry_formset = EntryFormSet(request.POST, prefix='entry_formset')
-        recipe = recipeform.save(commit=False)
-        if recipeform.is_valid():
 
-            # get cocktail reference form kwargs:
-            if 'cocktail' in self.kwargs:
-                cocktail = self.kwargs['cocktail']
-                recipe.cocktail = cocktail
-            else:
-                return HttpResponse('Error: recipe not assigned to a group object.')
+        cocktail_slug = self.kwargs['cocktail_slug']
+        cocktail = Cocktail.objects.get(slug=cocktail_slug)
 
-            if 'rank' in self.kwargs:
-                recipe.rank= int(self.kwargs['rank'])
+        rank = int(self.kwargs['rank'])
 
-            recipe.save()
+        recipe_form_response = ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset)
 
-            if entry_formset.is_valid():
-
-                rank = 1
-
-                for entry in entry_formset:
-
-                    entryobject = Entry.objects.create(recipe=recipe)
-
-                    entryobject.amount = entry.cleaned_data['amount']
-
-                    entryobject.rank = rank
-
-                    ingredientname = entry.cleaned_data['ingredient']
-
-                    slug = slugify(ingredientname)
-
-                    if (Ingredient.objects.filter(slug=slug).exists()):
-                        ingredientobject = Ingredient.objects.get(slug=slug)
-                        ingredientobject.recipes += 1
-
-                    else:
-                        ingredientobject = Ingredient.objects.create(name=ingredientname)
-                        ingredientobject.recipes = 1
-
-                    ingredientobject.save()
-                    entryobject.ingredient = ingredientobject
-
-                    entryobject.save()
-
-                    rank = rank + 1
-
-            else:
-                print entry_formset.errors
+        if(not recipe_form_response):
+            return redirect('cocktails:cocktail', cocktail_slug='jet-pilot', rank=2)
 
         else:
-            print recipeform.errors
+            cocktail.delete()
+            recipe_form = recipe_form_response['recipe_form']
+            entry_formset = recipe_form_response['entry_formset']
 
+        ctx = {}
+        ctx['recipe_form'] = recipe_form
+        ctx['entry_formset'] = entry_formset
 
-        return {'recipeform':recipeform, 'entry_formset':entry_formset}
+        return render(request, 'cocktails/recipe_form.html', ctx)
 
 
 
