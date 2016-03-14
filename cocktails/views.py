@@ -75,9 +75,14 @@ class GetRecipe(View):
 class AddCocktail(View):
 
     def get(self, request, *args, **kwargs):
+        ctx = {}
         cocktailform = CocktailForm(prefix='cocktail_form')
-
-        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
+        ctx['cocktailform'] = cocktailform
+        recipeform = RecipeForm(prefix='recipe_form')
+        ctx['recipeform'] = recipeform
+        entry_formset = EntryFormSet(prefix='entry_formset')
+        ctx['entry_formset'] = entry_formset
+        return render(request, 'cocktails/addcocktail.html', ctx)
 
     def post(self, request, *args, **kwargs):
         cocktailform = CocktailForm(request.POST, prefix='cocktail_form')
@@ -87,13 +92,13 @@ class AddCocktail(View):
             cocktail = cocktailform.save(commit=True)
             cocktail.type = 'cocktial'
             cocktail.save()
-            AddRecipe.as_view()(self.request, **{'cocktail':cocktail})
-            return redirect ('cocktails:cocktail', cocktail_slug=cocktail.slug)
+            ctx = AddRecipe.as_view()(self.request, **{'cocktail':cocktail})
+            ctx = dict(ctx.items() + {'cocktailform':cocktailform}.items())
 
         else:
             print cocktailform.errors
 
-        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
+        return render(request, 'cocktails/addcocktail.html', ctx)
 
 class AddRecipe(View):
 
@@ -124,9 +129,6 @@ class AddRecipe(View):
                 recipe.rank= int(self.kwargs['rank'])
 
             recipe.save()
-
-
-
 
             if entry_formset.is_valid():
 
@@ -166,10 +168,7 @@ class AddRecipe(View):
             print recipeform.errors
 
 
-        return render(request, 'cocktails/recipeform.html', {
-            'recipeform': recipeform,
-            "entry_formset" : entry_formset
-        })
+        return {'recipeform':recipeform, 'entry_formset':entry_formset}
 
 
 
