@@ -109,49 +109,67 @@ class AddRecipe(View):
     def post(self, request, *args, **kwargs):
         # get and save recipe form
         recipeform = RecipeForm(request.POST, prefix='recipe_form')
-        recipe=recipeform.save(commit=False)
-        # get cocktail reference form kwargs:
-        if 'cocktail' in self.kwargs:
-            cocktail = self.kwargs['cocktail']
-            recipe.cocktail = cocktail
-        else:
-            return HttpResponse('Error: recipe not assigned to a group object.')
-
-        if 'rank' in self.kwargs:
-            recipe.rank= int(self.kwargs['rank'])
-
-        recipe.save()
-
         entry_formset = EntryFormSet(request.POST, prefix='entry_formset')
+        recipe = recipeform.save(commit=False)
+        if recipeform.is_valid():
 
-        if entry_formset.is_valid():
-            print(entry_formset)
-            for entry in entry_formset:
+            # get cocktail reference form kwargs:
+            if 'cocktail' in self.kwargs:
+                cocktail = self.kwargs['cocktail']
+                recipe.cocktail = cocktail
+            else:
+                return HttpResponse('Error: recipe not assigned to a group object.')
 
-                entryobject = Entry.objects.create(recipe=recipe)
+            if 'rank' in self.kwargs:
+                recipe.rank= int(self.kwargs['rank'])
 
-                entryobject.amount = entry.cleaned_data['amount']
+            recipe.save()
 
-                ingredientname = entry.cleaned_data['ingredient']
 
-                slug = slugify(ingredientname)
 
-                if (Ingredient.objects.filter(slug=slug).exists()):
-                    ingredientobject = Ingredient.objects.get(slug=slug)
-                else:
-                    ingredientobject = Ingredient.objects.create(name=ingredientname)
+
+            if entry_formset.is_valid():
+
+                rank = 1
+
+                for entry in entry_formset:
+
+                    entryobject = Entry.objects.create(recipe=recipe)
+
+                    entryobject.amount = entry.cleaned_data['amount']
+
+                    entryobject.rank = rank
+
+                    ingredientname = entry.cleaned_data['ingredient']
+
+                    slug = slugify(ingredientname)
+
+                    if (Ingredient.objects.filter(slug=slug).exists()):
+                        ingredientobject = Ingredient.objects.get(slug=slug)
+                        ingredientobject.recipes += 1
+
+                    else:
+                        ingredientobject = Ingredient.objects.create(name=ingredientname)
+                        ingredientobject.recipes = 1
+
                     ingredientobject.save()
-                entryobject.ingredient = ingredientobject
+                    entryobject.ingredient = ingredientobject
 
-                entryobject.save()
+                    entryobject.save()
+
+                    rank = rank + 1
+
+            else:
+                print entry_formset.errors
+
+        else:
+            print recipeform.errors
 
 
-
-
-
-
-
-        return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})
+        return render(request, 'cocktails/recipeform.html', {
+            'recipeform': recipeform,
+            "entry_formset" : entry_formset
+        })
 
 
 

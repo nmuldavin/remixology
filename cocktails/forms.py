@@ -22,9 +22,17 @@ class CocktailForm (forms.ModelForm):
         model = Cocktail
         exclude = ('slug', 'type')
 
+
+
 class EntryForm (forms.Form):
-    amount = forms.CharField()
+    amount = forms.CharField(required=False)
     ingredient = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super(EntryForm, self).clean()
+        amount = cleaned_data.get('amount')
+
+        return cleaned_data
 
     class Meta:
         fields = ('amount', 'ingredient')

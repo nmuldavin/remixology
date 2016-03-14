@@ -23,6 +23,7 @@ class Ingredient(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(default='', blank=True, unique=True)
+    recipes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -46,7 +47,7 @@ class Entry(models.Model):
 
 # Recipe model
 class Recipe(models.Model):
-    label = models.CharField(default='', max_length=100)
+    label = models.CharField(blank=True, max_length=100)
     directions = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     cocktail = models.ForeignKey('cocktail', null=True, on_delete=models.CASCADE)
