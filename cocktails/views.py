@@ -55,6 +55,7 @@ class GroupView(View):
                 ctx['group'] = group
                 recipes = Recipe.objects.filter(cocktail=group).count()
                 ctx['recipes'] = recipes
+                ctx['recipes_range'] = range(1, recipes+1)
 
                 if 'rank' in self.kwargs:
                     rank = int(self.kwargs['rank'])

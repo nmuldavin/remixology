@@ -1,3 +1,20 @@
+#recipe_container {
+    margin: 0px;
+    padding: 0px;
+}
+
+.diff {
+background-color:cadetblue;
+}
+
+p.tiny {
+font-size:xx-small;
+}
+
+p#groupdescription {
+font-weight: bold;
+}
+
 .form_inherit {
     font-family : inherit;
     font-size: 100%;
@@ -7,8 +24,8 @@
 .char_field {
     border:none;
 }
+
 .char_field:focus, .char_field:hover{
     outline:none;
     background-color: beige;
 }
-

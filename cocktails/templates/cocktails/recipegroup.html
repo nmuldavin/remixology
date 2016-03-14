@@ -5,8 +5,7 @@
 {% block headfirst %}{% endblock %}
 
 {% block headlast %}
-  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/cocktailform.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipe_page.css' %}">
 {% endblock %}
 
 {% block title %}{{ group.name }}{% endblock %}
@@ -15,9 +14,16 @@
   {% if group %}
     <h1 id="groupname">{{ group.name }}</h1>
     <p id="groupdescription">{{ group.description }}</p>
-    <button class="btn" id="previous">Previous</button>
-    <button class="btn" id="next">Next</button>
-    <button class="btn" id="add_recipe">Add another</button>
+    <div id="controls_container">
+      <button class="btn" id="previous">Previous</button>
+      {% for i in recipes_range %}
+        <button class="btn recipe_button">{{ i }}</button>
+      {% endfor %}
+      <button class="btn" id="next">Next</button>
+      <button class="btn" id="edit_recipe">Edit Recipe</button>
+      <button class="btn" id="add_recipe">Add another</button>
+    </div>
+
     <div id="recipe_container" data-group={{ group.slug }} data-reciperank={{ reciperank }} data-recipes={{ recipes }}>
       {% with 'cocktails/recipe.html' as template %}
         {% include template %}

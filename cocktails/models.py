@@ -63,10 +63,6 @@ class Recipe(models.Model):
         self.slug = slugify(self.label)
         super(Recipe, self).save(*args, **kwargs)
 
-
-
-
-
 class RecipeGroup(models.Model):
     name = models.CharField(default='', max_length=150, unique=True)
     slug = models.SlugField(default='', blank = True, unique=True)
