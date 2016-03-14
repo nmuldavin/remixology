@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View
+from django.template.defaultfilters import slugify
 from .models import *
 from .forms import *
 from django.template import RequestContext
@@ -98,7 +99,7 @@ class AddRecipe(View):
 
     def get(self, request, *args, **kwargs):
         recipeform = RecipeForm(prefix='recipe_form')
-        entry_formset = EntryFormSet(instance=Recipe(), prefix='entry_formset')
+        entry_formset = EntryFormSet(prefix='entry_formset')
         return render(request, 'cocktails/recipeform.html', {
             'recipeform': recipeform,
             "entry_formset" : entry_formset
@@ -121,9 +122,33 @@ class AddRecipe(View):
 
         recipe.save()
 
-        entry_formset = EntryFormSet(request.POST, instance=recipe, prefix='entry_formset')
-        #entries = entry_formset.save(commit=False)
-        print(entry_formset)
+        entry_formset = EntryFormSet(request.POST, prefix='entry_formset')
+
+        if entry_formset.is_valid():
+            print(entry_formset)
+            for entry in entry_formset:
+
+                entryobject = Entry.objects.create(recipe=recipe)
+
+                entryobject.amount = entry.cleaned_data['amount']
+
+                ingredientname = entry.cleaned_data['ingredient']
+
+                slug = slugify(ingredientname)
+
+                if (Ingredient.objects.filter(slug=slug).exists()):
+                    ingredientobject = Ingredient.objects.get(slug=slug)
+                else:
+                    ingredientobject = Ingredient.objects.create(name=ingredientname)
+                    ingredientobject.save()
+                entryobject.ingredient = ingredientobject
+
+                entryobject.save()
+
+
+
+
+
 
 
         return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})

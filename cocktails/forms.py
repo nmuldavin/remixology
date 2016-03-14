@@ -2,7 +2,7 @@ from django import forms
 from cocktails.models import *
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
-from django.forms.models import inlineformset_factory
+from django.forms.models import formset_factory
 
 def validate_name_and_slug(name):
     if Cocktail.objects.filter(name=name).exists():
@@ -22,16 +22,17 @@ class CocktailForm (forms.ModelForm):
         model = Cocktail
         exclude = ('slug', 'type')
 
-class EntryForm (forms.ModelForm):
-    class Meta:
-        model = Entry
-        exclude = ('rank', 'recipe')
+class EntryForm (forms.Form):
+    amount = forms.CharField()
+    ingredient = forms.CharField()
 
-EntryFormSet = inlineformset_factory(Recipe,
-                                     Entry,
-                                     form=EntryForm,
-                                     can_delete=False,
-                                     extra=1)
+    class Meta:
+        fields = ('amount', 'ingredient')
+
+
+EntryFormSet = formset_factory(EntryForm,
+                                can_delete=False,
+                                extra=2)
 
 class RecipeForm (forms.ModelForm):
 
