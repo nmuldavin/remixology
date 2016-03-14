@@ -22,6 +22,26 @@ class IngredientView(View):
 
         return render(request, 'cocktails/ingredient.html', ctx)
 
+def LoadRecipe(cocktail, rank):
+
+    ctx = {}
+
+    try:
+        recipe = Recipe.objects.get(cocktail=cocktail, rank=rank)
+        ctx['recipe'] = recipe
+
+    except:
+        pass
+
+    try:
+        ingredients=Entry.objects.filter(recipe=recipe).order_by('rank')
+        ctx['ingredients'] = ingredients
+
+    except:
+        pass
+
+    return ctx
+
 class GroupView(View):
 
     def get(self, request, *args, **kwargs):
@@ -36,14 +56,21 @@ class GroupView(View):
                 ctx['group'] = group
                 recipes = Recipe.objects.filter(cocktail=group).count()
                 ctx['recipes'] = recipes
+
+                if 'rank' in self.kwargs:
+                    rank = int(self.kwargs['rank'])
+                else:
+                    rank = 1
+                ctx['reciperank'] = rank
+
+                recipectx = LoadRecipe(group, rank)
+                ctx.update(recipectx)
             except:
                 pass
 
-
-
         return render(request, 'cocktails/recipegroup.html', ctx)
 
-class GetRecipe(View):
+class RecipeView(View):
 
     def get(self, request, *args, **kwargs):
 
@@ -53,47 +80,119 @@ class GetRecipe(View):
             try:
                 group = Cocktail.objects.get(slug=group_slug)
             except:
-                pass
+                print ("Error: Attempting to load recipe for nonexistent group")
 
             rank = self.kwargs['rank']
-            try:
-                recipe=Recipe.objects.get(cocktail=group, rank=rank)
-                ctx['recipe'] = recipe
-            except:
-                pass
 
-            try:
-                ingredients=Entry.objects.filter(recipe=recipe).order_by('rank')
-                ctx['ingredients'] = ingredients
-
-            except:
-                pass
+            ctx = LoadRecipe(group, rank)
 
 
         return render(request, 'cocktails/recipe.html', ctx)
 
+
 class AddCocktail(View):
 
     def get(self, request, *args, **kwargs):
-        cocktailform = CocktailForm(prefix='cocktail_form')
 
-        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
+        ctx = {}
+        cocktail_form = CocktailForm(prefix='cocktail_form')
+        ctx['cocktail_form'] = cocktail_form
+
+        recipe_form = RecipeForm(prefix='recipe_form')
+        ctx['recipe_form'] = recipe_form
+
+        entry_formset = EntryFormSet(prefix='entry_formset')
+        ctx['entry_formset'] = entry_formset
+
+        return render(request, 'cocktails/addcocktail.html', ctx)
+
+        #return GroupView.as_view()(self.request, **{'cocktail_slug': 'jet-pilot', 'rank':3})
 
     def post(self, request, *args, **kwargs):
-        cocktailform = CocktailForm(request.POST, prefix='cocktail_form')
+        cocktail_form = CocktailForm(request.POST, prefix='cocktail_form')
+        recipe_form = RecipeForm(request.POST, prefix='recipe_form')
+        entry_formset = EntryFormSet(request.POST, prefix='entry_formset')
+        rank = 1
+        if cocktail_form.is_valid():
 
-        if cocktailform.is_valid():
-
-            cocktail = cocktailform.save(commit=True)
+            cocktail = cocktail_form.save(commit=False)
             cocktail.type = 'cocktial'
             cocktail.save()
-            AddRecipe.as_view()(self.request, **{'cocktail':cocktail})
-            return redirect ('cocktails:cocktail', cocktail_slug=cocktail.slug)
+            recipe_form_response = ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset)
+
+            if(not recipe_form_response):
+                return redirect('cocktails:cocktail', cocktail_slug=cocktail.slug)
+                #return GroupView.get()(self.request, **{'cocktail_slug': cocktail.slug, 'rank':rank})
+            else:
+                cocktail.delete()
+                recipe_form = recipe_form_response['recipe_form']
+                entry_formset = recipe_form_response['entry_formset']
 
         else:
-            print cocktailform.errors
+            print cocktail_form.errors
 
-        return render(request, 'cocktails/addcocktail.html', {'cocktailform': cocktailform})
+        ctx = {}
+        ctx['cocktail_form'] = cocktail_form
+        ctx['recipe_form'] = recipe_form
+        ctx['entry_formset'] = entry_formset
+
+        return render(request, 'cocktails/addcocktail.html', ctx)
+
+def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
+    Success = False
+    if recipe_form.is_valid():
+        recipe = recipe_form.save(commit=False)
+        recipe.cocktail = cocktail
+        recipe.rank = rank
+        recipe.save()
+
+        if entry_formset.is_valid():
+            Success = True
+            entry_rank = 1
+
+            for entry in entry_formset:
+                if entry.is_valid():
+                    entry_object = Entry.objects.create(recipe=recipe)
+
+                    if 'amount' in entry.cleaned_data:
+                        entry_object.amount = entry.cleaned_data['amount']
+
+                    entry_object.rank = entry_rank
+                    ingredient_name = entry.cleaned_data['ingredient']
+
+
+                    slug = slugify(ingredient_name)
+
+                    if (Ingredient.objects.filter(slug=slug).exists()):
+                        ingredient_object = Ingredient.objects.get(slug=slug)
+                        ingredient_object.recipes += 1
+
+                    else:
+                        ingredient_object = Ingredient.objects.create(name=ingredient_name)
+                        ingredient_object.recipes = 1
+
+                    ingredient_object.save()
+                    entry_object.ingredient = ingredient_object
+
+                    entry_object.save()
+
+                    entry_rank = entry_rank + 1
+                else:
+                    print entry.errors
+
+
+        else:
+            print entry_formset.errors
+
+    else:
+        recipe.delete()
+        print recipe_form.errors
+
+    print(Success)
+    if(Success):
+        return {}
+    else:
+        return {'recipe_form':recipe_form, 'entry_formset':entry_formset}
 
 class AddRecipe(View):
 
@@ -105,6 +204,8 @@ class AddRecipe(View):
             "entry_formset" : entry_formset
         })
         #return render(request, 'cocktails/recipeform.html', {'recipeform':recipeform})
+
+
 
     def post(self, request, *args, **kwargs):
         # get and save recipe form
@@ -124,9 +225,6 @@ class AddRecipe(View):
                 recipe.rank= int(self.kwargs['rank'])
 
             recipe.save()
-
-
-
 
             if entry_formset.is_valid():
 
@@ -166,10 +264,7 @@ class AddRecipe(View):
             print recipeform.errors
 
 
-        return render(request, 'cocktails/recipeform.html', {
-            'recipeform': recipeform,
-            "entry_formset" : entry_formset
-        })
+        return {'recipeform':recipeform, 'entry_formset':entry_formset}
 
 
 

@@ -17,7 +17,7 @@
     <button class="btn" id="previous">Previous</button>
     <button class="btn" id="next">Next</button>
     <button class="btn" id="add_recipe">Add another</button>
-    <div id="recipe_container" data-group={{ group.slug }} data-recipes={{ recipes }}>
+    <div id="recipe_container" data-group={{ group.slug }} data-reciperank={{ reciperank }} data-recipes={{ recipes }}>
       {% with 'cocktails/recipe.html' as template %}
         {% include template %}
       {% endwith %}
