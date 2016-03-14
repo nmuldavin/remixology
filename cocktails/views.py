@@ -62,7 +62,8 @@ class GroupView(View):
                 else:
                     rank = 1
                 ctx['reciperank'] = rank
-
+                if rank > recipes:
+                        return HttpResponse('Error: ' + group.name + ' recipe number ' + str(rank) + ' does not exist!')
                 recipectx = LoadRecipe(group, rank)
                 ctx.update(recipectx)
             except:

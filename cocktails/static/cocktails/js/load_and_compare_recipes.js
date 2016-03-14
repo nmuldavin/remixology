@@ -5,8 +5,8 @@
 // the recipe data in to the recipe.html template and reloads.
 function loadRecipe(slug, rank, callback) {
     $("#recipe_container").html('').load(
-    '/cocktails/'+ slug + '/' + String(rank), function() {
-            console.log("Loaded recipe " + rank)
+    '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
+        console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
         }
@@ -16,7 +16,7 @@ function loadRecipe(slug, rank, callback) {
 function loadRecipeForm(slug, rank, callback) {
     $("#recipe_container").html('').load(
     '/cocktails/'+ slug + '/' + String(rank), function() {
-            console.log("Loaded recipe " + rank)
+        console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
         }
