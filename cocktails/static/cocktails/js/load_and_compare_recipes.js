@@ -134,22 +134,43 @@ function populateForm(data) {
     $("#id_recipe_form-label").val(data.label)
 }
 
-function incrementIndices(newentry) {
+function incrementIndices() {
 
     var amounts = document.querySelectorAll(".recipe-entry .amount .char_field");
     var amount = amounts[amounts.length-1];
 
-    var id = amount.id;
-    var index = parseInt(id.match(/(\d+)/g));
+    var ingredients = document.querySelectorAll(".recipe-entry .ingredient .char_field");
+    var ingredient = ingredients[ingredients.length-1];
+
+    // Getting index from one of the strings, doesn't matter which one.
+
+    var index = parseInt(amount.id.match(/(\d+)/g));
     index = index + 1;
-    amount.id = id.replace(/(\d+)/g, index);
+
+    // replacing index in ids:
+    var str = amount.id;
+    amount.id = str.replace(/(\d+)/g, index);
+
+    str = ingredient.id;
+    ingredient.id = str.replace(/(\d+)/g, index);
+
+    // replacing index in names:
+    var string = amount.name;
+    amount.name = str.replace(/(\d+)/g, index);
+
+    str = ingredient.name;
+    ingredient.name = str.replace(/(\d+)/g, index);
+
+    var totalforms = document.getElementById('id_entry_formset-TOTAL_FORMS');
+    var minforms = document.getElementById('id_entry_formset-MIN_NUM_FORMS');
+    var number = parseInt(totalforms.value);
+    number = number + 1;
+    totalforms.value = String(number);
+    minforms.value = String(number);
 
 }
 
-function increment(index, callback) {
-    index = index + 1;
-    callback();
-}
+
 function bob(newentry) {
     newentry.find(".char_field").each(function() {
             var formfield = $(this);
@@ -163,7 +184,7 @@ function formControlListeners() {
     $("#add_entry").click(function () {
         var newentry = $(".recipe-entry:last").clone();
         newentry.appendTo("#recipe-body");
-        incrementIndices(newentry);
+        incrementIndices();
     });
 
 
@@ -204,6 +225,7 @@ $(document).ready(function() {
         loadRecipeForm(slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
+            formControlListeners();
         });
     });
 
@@ -220,7 +242,6 @@ $(document).ready(function() {
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
             hideButtons(rank, recipes);
-            formControlListeners();
         });
     });
 
