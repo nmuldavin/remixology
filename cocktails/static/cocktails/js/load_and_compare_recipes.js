@@ -140,19 +140,12 @@ function incrementIndices(newentry) {
     var amount = amounts[amounts.length-1];
 
     var id = amount.id;
-    console.log(amount.id);
     var index = parseInt(id.match(/(\d+)/g));
-
     index = index + 1;
-    console.log(index);
-    id.replace(/(\d+)/g, String(index));
-    console.log(id);
-    amount.id = id;
-    console.log(amount.id);
-
-
+    amount.id = id.replace(/(\d+)/g, index);
 
 }
+
 function increment(index, callback) {
     index = index + 1;
     callback();
