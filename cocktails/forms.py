@@ -28,9 +28,6 @@ class EntryForm (forms.Form):
     amount = forms.CharField(required=False)
     ingredient = forms.CharField(required=True)
 
-
-
-
     class Meta:
         fields = ('amount', 'ingredient')
 
