@@ -22,11 +22,11 @@
       {% for entry in entry_formset %}
         <tr class="recipe-entry">
           <td class="entry-data amount">
-            {{ entry.amount|add_class:"form_inherit char_field" }}
+            {{ entry.amount|add_class:"form_inherit char_field entry_form" }}
             {{ entry.amount.errors }}
           </td>
           <td class="entry-data ingredient">
-            {{ entry.ingredient|add_class:"form_inherit char_field" }}
+            {{ entry.ingredient|add_class:"form_inherit char_field entry_form" }}
             {{ entry.ingredient.errors }}
           </td>
         </tr>

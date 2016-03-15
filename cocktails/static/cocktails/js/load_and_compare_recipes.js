@@ -134,14 +134,43 @@ function populateForm(data) {
     $("#id_recipe_form-label").val(data.label)
 }
 
+function incrementIndices(newentry) {
+
+    var amounts = document.querySelectorAll(".recipe-entry .amount .char_field");
+    var amount = amounts[amounts.length-1];
+
+    var id = amount.id;
+    console.log(amount.id);
+    var index = parseInt(id.match(/(\d+)/g));
+
+    index = index + 1;
+    console.log(index);
+    id.replace(/(\d+)/g, String(index));
+    console.log(id);
+    amount.id = id;
+    console.log(amount.id);
+
+
+
+}
+function increment(index, callback) {
+    index = index + 1;
+    callback();
+}
+function bob(newentry) {
+    newentry.find(".char_field").each(function() {
+            var formfield = $(this);
+            var id = formfield.attr('id');
+            var index = parseInt(id.match(/(\d+)/g));
+
+        })
+}
+
 function formControlListeners() {
     $("#add_entry").click(function () {
-        var newentry = $(".recipe-entry:last").clone()
-        newentry.find(".char_field").each(function() {
-            var index = parseInt($(this).attr('id').match(/(\d+)/g));
-            console.log(index);
-        })
+        var newentry = $(".recipe-entry:last").clone();
         newentry.appendTo("#recipe-body");
+        incrementIndices(newentry);
     });
 
 
