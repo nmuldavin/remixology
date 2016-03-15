@@ -234,6 +234,25 @@ $(document).ready(function() {
         loadRecipeForm(slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden')
             formControlListeners();
+            $('#add_recipe_form').submit(function() { // catch the form's submit event
+                console.log("Event Activated");
+                $.ajax({ // create an AJAX call...
+                    data: $(this).serialize(), // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    url: $(this).attr('action'), // the file to call
+                    success: function(response) { // on success..
+                        if (response='saved') {
+                            var url = window.location.reload()
+                        }
+                        else {
+                            $('#recipe_container').html(response); // update the DIV
+                            console.log('yes');
+                            formControlListeners();
+                        }
+                    },
+                });
+                return false;
+            });
         });
     });
 
@@ -244,6 +263,7 @@ $(document).ready(function() {
             hideButtons(rank, recipes);
         });
     });
+
 
 
 

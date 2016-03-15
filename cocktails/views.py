@@ -134,10 +134,10 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
 
 
         else:
+            recipe.delete()
             print entry_formset.errors
 
     else:
-        recipe.delete()
         print recipe_form.errors
 
     print(Success)
@@ -224,6 +224,7 @@ class AddRecipe(View):
 
     def post(self, request, *args, **kwargs):
 
+        recipe_form = RecipeForm(request.POST, prefix='recipe_form')
         init_formset = EntryFormSet(request.POST, prefix='entry_formset')
         numforms = init_formset.total_form_count()
         EntryFormSetVariation = formset_factory(EntryForm,
@@ -241,10 +242,9 @@ class AddRecipe(View):
         recipe_form_response = ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset)
 
         if(not recipe_form_response):
-            return redirect('cocktails:cocktail', cocktail_slug=cocktail_slug, rank=rank)
+            return HttpResponse('saved')
 
         else:
-            cocktail.delete()
             recipe_form = recipe_form_response['recipe_form']
             entry_formset = recipe_form_response['entry_formset']
 
