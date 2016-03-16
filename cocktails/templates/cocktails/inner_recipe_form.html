@@ -22,8 +22,10 @@
       {% for entry in entry_formset %}
         <tr class="recipe-entry">
           <td class="entry-data amount">
-            {{ entry.amount|add_class:"form_inherit char_field entry_form"}}
-            {{ entry.amount.errors }}
+            {% with entry.amount.name.value|default_if_none:'' as values %}
+              {% render_field entry.amount class+="form_inherit char_field" value=values%}
+              {{ entry.amount.errors }}
+            {% endwith %}
           </td>
           <td class="entry-data ingredient">
             {{ entry.ingredient|add_class:"form_inherit char_field entry_form"|add_error_attr:"placeholder:Please provide an ingredient name or remove this entry." }}
