@@ -70,7 +70,7 @@ function compareRecipeTo(data) {
 
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        var ingredient = row.getElementsByClassName('entry-data ingredient')[0].innerHTML
+        var ingredient = row.getElementsByClassName('entry-data ingredient')[0].innerHTML;
         var index;
         var found = false;
         for (var j = 0; j < standard.length; j++) {
@@ -130,8 +130,35 @@ function hideButtons(rank, recipes) {
     }
 }
 
+// innerText workaround since firefox won't support it.
+function ReplaceTags(xStr){
+        return xStr.textContent || xStr.innerText
+      }
+
 function populateForm(data) {
-    $("#id_recipe_form-label").val(data.label)
+    $("#id_recipe_form-label").val(data.label);
+    var prefix = 'id_recipe_formset';
+    var numEntries = data.entries.length;
+    $(".recipe-entry:last").remove()
+    changeManagementFormNumbers(-1);
+    var newentry = $(".recipe-entry:last").clone();
+    $(".recipe-entry:last").remove()
+    changeManagementFormNumbers(-1);
+    for (var i = 0; i < numEntries; i++) {
+        newentry.appendTo("#recipe-body");
+        if (i != 0) {
+            incrementIndices(1);
+        }
+        var amounts = document.querySelectorAll(".recipe-entry .amount .char_field");
+        var amount = amounts[amounts.length-1];
+        amount.value = data.entries[i].amount.trim();
+
+        var ingredients = document.querySelectorAll(".recipe-entry .ingredient .char_field");
+        var ingredient = ingredients[ingredients.length-1];
+        ingredient.value = data.entries[i].ingredient.trim();
+        newentry = $(".recipe-entry:last").clone();
+    }
+
 }
 
 function changeManagementFormNumbers(n) {
@@ -139,7 +166,6 @@ function changeManagementFormNumbers(n) {
     var minforms = document.getElementById('id_entry_formset-MIN_NUM_FORMS');
     var number = parseInt(totalforms.value);
     number = number + n;
-    console.log(number);
     totalforms.value = String(number);
     minforms.value = String(number);
 }

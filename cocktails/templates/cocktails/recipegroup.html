@@ -14,7 +14,7 @@
   {% if group %}
     <h1 id="groupname">{{ group.name }}</h1>
     <p id="groupdescription">{{ group.description }}</p>
-    <div id="controls_container">
+    <span id="controls_container">
       <button class="btn" id="previous">Previous</button>
       {% for i in recipes_range %}
         <button class="btn recipe_button">{{ i }}</button>
@@ -22,7 +22,10 @@
       <button class="btn" id="next">Next</button>
       <button class="btn" id="edit_recipe">Edit Recipe</button>
       <button class="btn" id="add_recipe">Add another</button>
-    </div>
+    </span>
+    <span id="form_controls_container">
+      <button type="submit" class="btn" id="form_submit">Save</button>
+    </span>
 
     <div id="recipe_container" data-group={{ group.slug }} data-reciperank={{ reciperank }} data-recipes={{ recipes }}>
       {% with 'cocktails/recipe.html' as template %}

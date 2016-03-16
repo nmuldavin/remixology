@@ -97,6 +97,9 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
         recipe = recipe_form.save(commit=False)
         recipe.cocktail = cocktail
         recipe.rank = rank
+        if (Recipe.objects.filter(cocktail=cocktail, rank=rank).exists()):
+            existing_recipe = Recipe.objects.get(cocktail=cocktail, rank=rank)
+            existing_recipe.delete()
         recipe.save()
 
         if entry_formset.is_valid():

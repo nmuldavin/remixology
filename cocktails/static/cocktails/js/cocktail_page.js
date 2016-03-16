@@ -26,18 +26,20 @@ $(document).ready(function() {
     });
 
     $("#edit_recipe").click(function() {
-        var data = saveStandardRecipe();
+        standard = saveStandardRecipe();
         loadRecipeForm(slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
             formControlListeners();
+            formSubmitListener();
         });
     });
 
     $("#add_recipe").click(function() {
         rank = recipes + 1;
         loadRecipeForm(slug, rank, function() {
-            $("#controls_container").children().css('visibility', 'hidden')
+            $("#controls_container").children().css('visibility', 'hidden');
+            populateForm(standard);
             formControlListeners();
             formSubmitListener();
         });
