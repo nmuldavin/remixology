@@ -23,6 +23,9 @@ class CocktailForm (forms.ModelForm):
         exclude = ('slug', 'type')
 
 
+def nullValidation(amount):
+    if(False):
+        raise(ValidationError('This will never happen'))
 
 class EntryForm (forms.Form):
     amount = forms.CharField(required=False)

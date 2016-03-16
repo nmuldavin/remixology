@@ -104,10 +104,11 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
             entry_rank = 1
             for entry in entry_formset.forms:
                 if entry.is_valid():
+                    entry # for some reason, just putting this here forces cleaned_data to save. Strange
                     entry_object = Entry.objects.create(recipe=recipe)
 
-                    if 'amount' in entry.cleaned_data:
-                        entry_object.amount = entry.cleaned_data['amount']
+
+                    entry_object.amount = entry.cleaned_data['amount']
 
                     entry_object.rank = entry_rank
                     ingredient_name = entry.cleaned_data['ingredient']
@@ -249,6 +250,8 @@ class AddRecipe(View):
             entry_formset = recipe_form_response['entry_formset']
 
         ctx = {}
+        ctx['cocktail_slug'] = cocktail_slug
+        ctx['rank'] = rank
         ctx['recipe_form'] = recipe_form
         ctx['entry_formset'] = entry_formset
 
