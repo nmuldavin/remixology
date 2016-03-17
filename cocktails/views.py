@@ -100,6 +100,7 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
         if (Recipe.objects.filter(cocktail=cocktail, rank=rank).exists()):
             existing_recipe = Recipe.objects.get(cocktail=cocktail, rank=rank)
             existing_recipe.delete()
+            print "Deleted old entry"
         recipe.save()
 
         if entry_formset.is_valid():
@@ -107,7 +108,7 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
             entry_rank = 1
             for entry in entry_formset.forms:
                 if entry.is_valid():
-                    entry # for some reason, just putting this here forces cleaned_data to save. Strange
+
                     entry_object = Entry.objects.create(recipe=recipe)
 
 
@@ -115,7 +116,7 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
 
                     entry_object.rank = entry_rank
                     ingredient_name = entry.cleaned_data['ingredient']
-
+                    #print(ingredient_name)
 
                     slug = slugify(ingredient_name)
 
@@ -131,9 +132,10 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
                     entry_object.ingredient = ingredient_object
 
                     entry_object.save()
-
+                    #print(entry_rank)
                     entry_rank = entry_rank + 1
                 else:
+                    print "false"
                     print entry.errors
 
 
@@ -227,7 +229,6 @@ class AddRecipe(View):
         return render(request, 'cocktails/recipe_form.html', ctx)
 
     def post(self, request, *args, **kwargs):
-        print request.POST
         recipe_form = RecipeForm(request.POST, prefix='recipe_form')
         init_formset = EntryFormSet(request.POST, prefix='entry_formset')
         numforms = init_formset.total_form_count()
@@ -237,7 +238,6 @@ class AddRecipe(View):
                                 can_delete=False,
                                 extra=0)
         entry_formset = EntryFormSetVariation(request.POST, prefix='entry_formset')
-
         cocktail_slug = self.kwargs['cocktail_slug']
         cocktail = Cocktail.objects.get(slug=cocktail_slug)
 

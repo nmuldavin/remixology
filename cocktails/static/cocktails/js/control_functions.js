@@ -10,7 +10,7 @@ function loadRecipe(slug, rank, callback) {
         if(callback) {
             callback();
         }
-    });
+    }).hide().fadeIn('slow');
 }
 
 function loadRecipeForm(slug, rank, callback) {
@@ -130,11 +130,6 @@ function hideButtons(rank, recipes) {
     }
 }
 
-// innerText workaround since firefox won't support it.
-function ReplaceTags(xStr){
-        return xStr.textContent || xStr.innerText
-      }
-
 function populateForm(data) {
     $("#id_recipe_form-label").val(data.label);
     var prefix = 'id_recipe_formset';
@@ -143,7 +138,6 @@ function populateForm(data) {
     changeManagementFormNumbers(-1);
     var newentry = $(".recipe-entry:last").clone();
     $(".recipe-entry:last").remove()
-    changeManagementFormNumbers(-1);
     for (var i = 0; i < numEntries; i++) {
         newentry.appendTo("#recipe-body");
         if (i != 0) {
@@ -158,6 +152,9 @@ function populateForm(data) {
         ingredient.value = data.entries[i].ingredient.trim();
         newentry = $(".recipe-entry:last").clone();
     }
+
+    $("#id_recipe_form-directions").val(data.directions);
+    $("#id_recipe_form-notes").val(data.notes);
 
 }
 
@@ -191,7 +188,7 @@ function incrementIndices(n) {
     ingredient.id = str.replace(/(\d+)/g, index);
 
     // replacing index in names:
-    var string = amount.name;
+    str = amount.name;
     amount.name = str.replace(/(\d+)/g, index);
 
     str = ingredient.name;
