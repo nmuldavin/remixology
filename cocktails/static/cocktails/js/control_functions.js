@@ -215,12 +215,12 @@ function formControlListeners() {
 }
 
 function formSubmitListener() {
-$('#add_recipe_form').submit(function() { // catch the form's submit event
+$('#form_submit').click(function() { // catch the form's submit event
             console.log("Event Activated");
             $.ajax({ // create an AJAX call...
-                data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
-                url: $(this).attr('action'), // the file to call
+                data: $('#add_recipe_form').serialize(), // get the form data
+                type: $('#add_recipe_form').attr('method'), // GET or POST
+                url: $('#add_recipe_form').attr('action'), // the file to call
                 success: function(response) { // on success..
                     if (response =='saved') {
                         var url = window.location.reload()

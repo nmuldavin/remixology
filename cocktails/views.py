@@ -227,7 +227,7 @@ class AddRecipe(View):
         return render(request, 'cocktails/recipe_form.html', ctx)
 
     def post(self, request, *args, **kwargs):
-
+        print request.POST
         recipe_form = RecipeForm(request.POST, prefix='recipe_form')
         init_formset = EntryFormSet(request.POST, prefix='entry_formset')
         numforms = init_formset.total_form_count()
