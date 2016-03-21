@@ -65,6 +65,9 @@ function compareRecipeTo(data) {
     if(directions.innerHTML != data.directions) {
         directions.className += " diff";
     }
+    else {
+        directions.className = directions.className.replace(/\bdiff\b/,'');
+    }
 
     for (var k = 0; k < standard.length; k++) {
             standard[k].present = false;
@@ -88,11 +91,14 @@ function compareRecipeTo(data) {
         if(!found) {
             row.className += " diff";
         }
-
         else {
+            row.className = row.className.replace(/\bdiff\b/,'');
             var amount = row.getElementsByClassName('entry-data amount')[0]
             if(amount.innerHTML != standard[index].amount) {
                 amount.className += " diff";
+            }
+            else {
+                amount.className = amount.className.replace(/\bdiff\b/,'');
             }
         }
         var anymissing = false;
@@ -252,3 +258,4 @@ function setFormControls() {
     $("#form_submit").show();
     $("#cancel_form").show();
 }
+

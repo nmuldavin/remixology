@@ -4,15 +4,22 @@ $(document).ready(function() {
     var rank = parseInt(document.getElementById('recipe_container').getAttribute('data-reciperank'));
     var standard = saveStandardRecipe();
 
-    setRecipeControls(rank, recipes);
+    function compareListener() {
+        $("#set_comparison").click(function() {
+            standard = saveStandardRecipe();
+            compareRecipeTo(standard);
+        });
+    }
 
+    setRecipeControls(rank, recipes);
+    compareListener();
 
     $("#next").click(function() {
         rank = rank + 1;
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
-            $("#previous").css('visibility','visible');
             setRecipeControls(rank, recipes);
+            compareListener();
         });
     });
 
@@ -20,8 +27,17 @@ $(document).ready(function() {
         rank = rank - 1;
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
-            $("#next").css('visibility','visible');
             setRecipeControls(rank, recipes);
+            compareListener();
+        });
+    });
+
+    $(".recipe_button").click(function() {
+        rank = parseInt((this).innerHTML);
+        loadRecipe(slug, rank, function() {
+            compareRecipeTo(standard);
+            setRecipeControls(rank, recipes);
+            compareListener();
         });
     });
 
@@ -61,13 +77,7 @@ $(document).ready(function() {
         });
     });
 
-    $(".recipe_button").click(function() {
-        rank = parseInt((this).innerHTML);
-        loadRecipe(slug, rank, function() {
-            compareRecipeTo(standard);
-            setRecipeControls(rank, recipes);
-        });
-    });
+
 
 
 
