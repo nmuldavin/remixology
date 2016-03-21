@@ -23,7 +23,7 @@
         <tr class="recipe-entry">
           <td class="entry-data amount">
             {% with entry.amount.name.value|default_if_none:'' as values %}
-              {% render_field entry.amount class+="form_inherit char_field" value=values%}
+              {% render_field entry.amount class+="form_inherit char_field entry_form" value=values%}
               {{ entry.amount.errors }}
             {% endwith %}
           </td>
