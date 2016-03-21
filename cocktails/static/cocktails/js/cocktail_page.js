@@ -4,7 +4,7 @@ $(document).ready(function() {
     var rank = parseInt(document.getElementById('recipe_container').getAttribute('data-reciperank'));
     var standard = saveStandardRecipe();
 
-    hideButtons(rank, recipes);
+    setRecipeControls(rank, recipes);
 
 
     $("#next").click(function() {
@@ -12,7 +12,7 @@ $(document).ready(function() {
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
             $("#previous").css('visibility','visible');
-            hideButtons(rank, recipes);
+            setRecipeControls(rank, recipes);
         });
     });
 
@@ -21,7 +21,7 @@ $(document).ready(function() {
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
             $("#next").css('visibility','visible');
-            hideButtons(rank, recipes);
+            setRecipeControls(rank, recipes);
         });
     });
 
@@ -30,8 +30,11 @@ $(document).ready(function() {
         loadRecipeForm(slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
+            setFormControls();
             formControlListeners();
             formSubmitListener();
+            $("#id_recipe_form-directions").elastic();
+            $("#id_recipe_form-notes").elastic();
         });
     });
 
@@ -40,8 +43,21 @@ $(document).ready(function() {
         loadRecipeForm(slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
+            setFormControls();
             formControlListeners();
             formSubmitListener();
+            $("#id_recipe_form-directions").elastic();
+            $("#id_recipe_form-notes").elastic();
+        });
+    });
+
+    $("#cancel_form").click(function() {
+        if (rank > recipes) {
+            rank = 1;
+        }
+        loadRecipe(slug, rank, function() {
+            compareRecipeTo(standard);
+            setRecipeControls(rank, recipes);
         });
     });
 
@@ -49,7 +65,7 @@ $(document).ready(function() {
         rank = parseInt((this).innerHTML);
         loadRecipe(slug, rank, function() {
             compareRecipeTo(standard);
-            hideButtons(rank, recipes);
+            setRecipeControls(rank, recipes);
         });
     });
 
