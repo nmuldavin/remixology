@@ -1,8 +1,8 @@
 
 
-// loadRecipe function makes an ajax request to the GetRecipe view,
+// loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
-// the recipe data in to the recipe.html template and reloads.
+// the rendered response in to the recipe container div.
 function loadRecipe(slug, rank, callback) {
     $("#recipe_container").html('').load(
     '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
@@ -10,9 +10,12 @@ function loadRecipe(slug, rank, callback) {
         if(callback) {
             callback();
         }
-    });
+    }).hide().fadeIn('slow');
 }
 
+// loadRecipe function makes a request to the GetRecipe view,
+// passing the group slug and recipe rank through the url. It then loads
+// the rendered response in to the recipe container div.
 function loadRecipeForm(slug, rank, callback) {
     $("#recipe_container").html('').load(
     '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
@@ -20,7 +23,7 @@ function loadRecipeForm(slug, rank, callback) {
         if(callback) {
             callback();
         }
-    });
+    }).hide().fadeIn('slow');
 }
 
 // saveStandardRecipe reads the page HTML to build a table of recipe
@@ -43,8 +46,7 @@ function saveStandardRecipe() {
         entries.push(entry);
     }
 
-    var standard = {'label':label, 'directions':directions, 'notes':notes, 'entries':entries}
-    return standard;
+    return {'label':label, 'directions':directions, 'notes':notes, 'entries':entries}
 }
 
 // Outline: for each ingredient, search standard for that ingredient.
@@ -63,6 +65,9 @@ function compareRecipeTo(data) {
     if(directions.innerHTML != data.directions) {
         directions.className += " diff";
     }
+    else {
+        directions.className = directions.className.replace(/\bdiff\b/,'');
+    }
 
     for (var k = 0; k < standard.length; k++) {
             standard[k].present = false;
@@ -70,7 +75,7 @@ function compareRecipeTo(data) {
 
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
-        var ingredient = row.getElementsByClassName('entry-data ingredient')[0].innerHTML
+        var ingredient = row.getElementsByClassName('entry-data ingredient')[0].innerHTML;
         var index;
         var found = false;
         for (var j = 0; j < standard.length; j++) {
@@ -86,11 +91,14 @@ function compareRecipeTo(data) {
         if(!found) {
             row.className += " diff";
         }
-
         else {
+            row.className = row.className.replace(/\bdiff\b/,'');
             var amount = row.getElementsByClassName('entry-data amount')[0]
             if(amount.innerHTML != standard[index].amount) {
                 amount.className += " diff";
+            }
+            else {
+                amount.className = amount.className.replace(/\bdiff\b/,'');
             }
         }
         var anymissing = false;
@@ -115,23 +123,34 @@ function compareRecipeTo(data) {
         }
 }
 
-function hideButtons(rank, recipes) {
-    if (rank >= recipes) {
-        $("#next").css('visibility','hidden');
-    }
-    else {
-        $("#next").css('visibility','visible');
-    }
-    if (rank <= 1) {
-        $("#previous").css('visibility','hidden');
-    }
-    else {
-        $("#previous").css('visibility','visible');
-    }
-}
 
+// populateForm uses the saved recipe data to pre-populate form fields.
 function populateForm(data) {
-    $("#id_recipe_form-label").val(data.label)
+    $("#id_recipe_form-label").val(data.label);
+
+    var numEntries = data.entries.length;
+    $(".recipe-entry:last").remove()
+    changeManagementFormNumbers(-1);
+    var newentry = $(".recipe-entry:last").clone();
+    $(".recipe-entry:last").remove()
+    for (var i = 0; i < numEntries; i++) {
+        newentry.appendTo("#recipe-body");
+        if (i != 0) {
+            incrementIndices(1);
+        }
+        var amounts = document.querySelectorAll(".recipe-entry .amount .char_field");
+        var amount = amounts[amounts.length-1];
+        amount.value = data.entries[i].amount.trim();
+
+        var ingredients = document.querySelectorAll(".recipe-entry .ingredient .char_field");
+        var ingredient = ingredients[ingredients.length-1];
+        ingredient.value = data.entries[i].ingredient.trim();
+        newentry = $(".recipe-entry:last").clone();
+    }
+
+    $("#id_recipe_form-directions").val(data.directions);
+    $("#id_recipe_form-notes").val(data.notes);
+
 }
 
 function changeManagementFormNumbers(n) {
@@ -139,7 +158,6 @@ function changeManagementFormNumbers(n) {
     var minforms = document.getElementById('id_entry_formset-MIN_NUM_FORMS');
     var number = parseInt(totalforms.value);
     number = number + n;
-    console.log(number);
     totalforms.value = String(number);
     minforms.value = String(number);
 }
@@ -165,19 +183,13 @@ function incrementIndices(n) {
     ingredient.id = str.replace(/(\d+)/g, index);
 
     // replacing index in names:
-    var string = amount.name;
+    str = amount.name;
     amount.name = str.replace(/(\d+)/g, index);
 
     str = ingredient.name;
     ingredient.name = str.replace(/(\d+)/g, index);
 
-    var totalforms = document.getElementById('id_entry_formset-TOTAL_FORMS');
-    var minforms = document.getElementById('id_entry_formset-MIN_NUM_FORMS');
-    var number = parseInt(totalforms.value);
-    number = number + n;
-    console.log('shit');
-    totalforms.value = String(number);
-    minforms.value = String(number);
+    changeManagementFormNumbers(n);
 }
 
 function formControlListeners() {
@@ -195,12 +207,12 @@ function formControlListeners() {
 }
 
 function formSubmitListener() {
-$('#add_recipe_form').submit(function() { // catch the form's submit event
+$('#form_submit').click(function() { // catch the form's submit event
             console.log("Event Activated");
             $.ajax({ // create an AJAX call...
-                data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
-                url: $(this).attr('action'), // the file to call
+                data: $('#add_recipe_form').serialize(), // get the form data
+                type: $('#add_recipe_form').attr('method'), // GET or POST
+                url: $('#add_recipe_form').attr('action'), // the file to call
                 success: function(response) { // on success..
                     if (response =='saved') {
                         var url = window.location.reload()
@@ -215,60 +227,35 @@ $('#add_recipe_form').submit(function() { // catch the form's submit event
             return false;
         });
 }
-$(document).ready(function() {
-    var slug = document.getElementById('recipe_container').getAttribute('data-group');
-    var recipes = parseInt(document.getElementById('recipe_container').getAttribute('data-recipes'));
-    var rank = parseInt(document.getElementById('recipe_container').getAttribute('data-reciperank'));
-    var standard = saveStandardRecipe();
 
-    hideButtons(rank, recipes);
+function setRecipeControls(rank, recipes) {
+    $("#add_recipe").show();
+    $("#edit_recipe").show();
+    $("#form_submit").hide();
+    $("#cancel_form").hide();
 
+    $("#controls_container").css('visibility', 'visible');
+    $('.recipe_button').css('visibility', 'visible');
 
-    $("#next").click(function() {
-        rank = rank + 1;
-        loadRecipe(slug, rank, function() {
-            compareRecipeTo(standard);
-            $("#previous").css('visibility','visible');
-            hideButtons(rank, recipes);
-        });
-    });
+    if (rank >= recipes) {
+        $("#next").css('visibility','hidden');
+    }
+    else {
+        $("#next").css('visibility','visible');
+    }
+    if (rank <= 1) {
+        $("#previous").css('visibility','hidden');
+    }
+    else {
+        $("#previous").css('visibility','visible');
+    }
+}
 
-    $("#previous").click(function() {
-        rank = rank - 1;
-        loadRecipe(slug, rank, function() {
-            compareRecipeTo(standard);
-            $("#next").css('visibility','visible');
-            hideButtons(rank, recipes);
-        });
-    });
+function setFormControls() {
+    $("#controls_container").css('visibility', 'hidden');
+    $("#add_recipe").hide();
+    $("#edit_recipe").hide();
+    $("#form_submit").show();
+    $("#cancel_form").show();
+}
 
-    $("#edit_recipe").click(function() {
-        var data = saveStandardRecipe();
-        loadRecipeForm(slug, rank, function() {
-            $("#controls_container").children().css('visibility', 'hidden');
-            populateForm(standard);
-            formControlListeners();
-        });
-    });
-
-    $("#add_recipe").click(function() {
-        rank = recipes + 1;
-        loadRecipeForm(slug, rank, function() {
-            $("#controls_container").children().css('visibility', 'hidden')
-            formControlListeners();
-            formSubmitListener();
-        });
-    });
-
-    $(".recipe_button").click(function() {
-        rank = parseInt((this).innerHTML);
-        loadRecipe(slug, rank, function() {
-            compareRecipeTo(standard);
-            hideButtons(rank, recipes);
-        });
-    });
-
-
-
-
-});

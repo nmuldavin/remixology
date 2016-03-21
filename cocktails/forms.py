@@ -2,6 +2,7 @@ from django import forms
 from cocktails.models import *
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
+from django.forms.models import formset_factory
 
 def validate_name_and_slug(name):
     if Cocktail.objects.filter(name=name).exists():
@@ -20,6 +21,25 @@ class CocktailForm (forms.ModelForm):
     class Meta:
         model = Cocktail
         exclude = ('slug', 'type')
+
+
+def nullValidation(amount):
+    if(False):
+        raise(ValidationError('This will never happen'))
+
+class EntryForm (forms.Form):
+    amount = forms.CharField(required=False)
+    ingredient = forms.CharField(required=True)
+
+    class Meta:
+        fields = ('amount', 'ingredient')
+
+
+EntryFormSet = formset_factory(EntryForm,
+                                min_num=2,
+                                validate_min=True,
+                                can_delete=False,
+                                extra=0)
 
 class RecipeForm (forms.ModelForm):
 
