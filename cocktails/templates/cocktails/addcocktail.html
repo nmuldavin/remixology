@@ -6,52 +6,42 @@
 {% block headfirst %}{% endblock %}
 
 {% block headlast %}
-  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipegroup.css' %}">
-  <style>
-      .form_inherit {
-        font-family : inherit;
-        font-size: 100%;
-        width: 100%;
-      }
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipe_page.css' %}">
 
-      .char_field {
-        border:none;
-      }
-      .char_field:focus, .char_field:hover{
-        outline:none;
-        background-color: beige;
-      }
-
-      p#groupdescription {
-        font-weight: bold;
-      }
-
-    </style>
 {% endblock %}
 
 {% block title %}New Cocktail{% endblock %}
 
 {% block bodyblock %}
-    <form id="cocktail_form" method="post" action="/addcocktail/">
+    <form id="cocktail_form" method="post" action="/cocktails/addcocktail/">
       {% csrf_token %}
-      {{ form.non_field_errors }}
+      {{ cocktail_form.non_field_errors }}
+      {% for hidden in cocktail_form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
       <h1 id="groupname">
-        {{ form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
+        {{ cocktail_form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>
 
-      {{ form.name.errors }}
-
-
+      {{ cocktail_form.name.errors }}
 
       <p id="groupdescription">
-        {{ form.description.errors }}
-        {{ form.description|add_class:"form_inherit char_field"|attr:"rows:2"}}
+        {{ cocktail_form.description.errors }}
+        {{ cocktail_form.description|add_class:"form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
       </p>
+      <div id="recipe_container">
+        {% with 'cocktails/inner_recipe_form.html' as template %}
+          {% include template %}
+        {% endwith %}
+      </div>
       <input type="submit" name="submit" value="Create Category" />
     </form>
+
 
 {% endblock %}
 
 {% block scripts %}
-  <script src="{% static 'cocktails/js/load_and_compare_recipes.js' %}"></script>
+  <script src="{% static 'cocktails/js/control_functions.js' %}"></script>
+  <script src="{% static 'cocktails/js/jquery.elastic.source.js' %}"></script>
+  <script src="{% static 'cocktails/js/cocktail_form.js' %}"></script>
 {% endblock %}
