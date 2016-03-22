@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% load widget_tweaks %}
+{% load cocktails_extras %}
 
 {% block headfirst %}{% endblock %}
 
@@ -12,6 +13,9 @@
 
 {% block title %}New Cocktail{% endblock %}
 
+{% block side_block %}
+  {% get_cocktail_list %}
+{% endblock %}
 {% block bodyblock %}
     <form id="cocktail_form" method="post" action="/cocktails/addcocktail/">
       {% csrf_token %}

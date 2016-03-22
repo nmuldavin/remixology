@@ -1,0 +1,11 @@
+{% if cocktails %}
+  <ul class="nav nav-sidebar">
+    {% for c in cocktails %}
+      <li><a href="{% url 'cocktails:cocktail' cocktail_slug=c.slug %}">{{ c.name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<ul class="nav nav-sidebar">
+  <li class="active"><a href="{% url 'cocktails:add_cocktail' %}">Add Another <span class="sr-only">(current)</span></a></li>
+</ul>

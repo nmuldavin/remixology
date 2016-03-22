@@ -1,6 +1,7 @@
 {% extends 'cocktails/base.html' %}
 
 {% load staticfiles %}
+{% load cocktails_extras %}
 
 {% block headfirst %}{% endblock %}
 
@@ -9,6 +10,10 @@
 {% endblock %}
 
 {% block title %}{{ group.name }}{% endblock %}
+
+{% block side_block %}
+  {% get_cocktail_list %}
+{% endblock %}
 
 {% block bodyblock %}
   {% if group %}

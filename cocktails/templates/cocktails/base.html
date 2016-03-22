@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 {% load staticfiles %}
-
 <html>
 
   <head>
@@ -14,9 +13,7 @@
 
     <!-- Default stylesheets -->
     <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <style>
-      body{ padding-top: 70px}
-    </style>
+    <link href="{% static 'cocktails/css/base.css' %}" rel="stylesheet">
     <!-- Block to input stylesheets and scripts that override defaults (bootstrap, etc -->
     {% block headlast %}{% endblock %}
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
@@ -55,13 +52,14 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-                {% block side_block %}{% endblock %}
+          {% block side_block %}
+          {% endblock %}
 
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
            <div>
-                {% block bodyblock %}{% endblock %}
-                </div>
+              {% block bodyblock %}{% endblock %}
+            </div>
         </div>
       </div>
     </div>
