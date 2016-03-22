@@ -4,20 +4,20 @@
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
 function loadRecipe(slug, rank, callback) {
-    $("#recipe_container").html('').load(
+    $("#recipe_container").load(
     '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
         console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
         }
-    }).hide().fadeIn('slow');
+    }).hide().fadeIn('fast');
 }
 
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
 function loadRecipeForm(slug, rank, callback) {
-    $("#recipe_container").html('').load(
+    $("#recipe_container").load(
     '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
         console.log("Loaded recipe form " + rank);
         if(callback) {
