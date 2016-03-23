@@ -85,6 +85,7 @@ class RecipeGroup(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     slug = models.SlugField(default='', blank=True)
     type = models.CharField(default='cocktail', max_length=30)
+    public = models.BooleanField(default=False)
     description = models.TextField(max_length=140, blank=True)
 
     def __str__(self):

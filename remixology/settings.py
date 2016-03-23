@@ -98,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REGISTRATION_OPEN = True
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
-LOGIN_REDIRECT_URL = '/cocktails/jet-pilot/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

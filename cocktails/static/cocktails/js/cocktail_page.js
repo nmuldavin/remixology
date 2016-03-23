@@ -1,5 +1,6 @@
 $(document).ready(function() {
     var slug = document.getElementById('recipe_container').getAttribute('data-group');
+    var user_directory = document.getElementById('groupname').getAttribute('data-user_directory')
     var recipes = parseInt(document.getElementById('recipe_container').getAttribute('data-recipes'));
     var rank = parseInt(document.getElementById('recipe_container').getAttribute('data-reciperank'));
     var standard = saveStandardRecipe();
@@ -16,7 +17,7 @@ $(document).ready(function() {
 
     $("#next").click(function() {
         rank = rank + 1;
-        loadRecipe(slug, rank, function() {
+        loadRecipe(user_directory, slug, rank, function() {
             compareRecipeTo(standard);
             setRecipeControls(rank, recipes);
             compareListener();
@@ -25,7 +26,7 @@ $(document).ready(function() {
 
     $("#previous").click(function() {
         rank = rank - 1;
-        loadRecipe(slug, rank, function() {
+        loadRecipe(user_directory, slug, rank, function() {
             compareRecipeTo(standard);
             setRecipeControls(rank, recipes);
             compareListener();
@@ -34,7 +35,7 @@ $(document).ready(function() {
 
     $(".recipe_button").click(function() {
         rank = parseInt((this).innerHTML);
-        loadRecipe(slug, rank, function() {
+        loadRecipe(user_directory, slug, rank, function() {
             compareRecipeTo(standard);
             setRecipeControls(rank, recipes);
             compareListener();
@@ -43,7 +44,7 @@ $(document).ready(function() {
 
     $("#edit_recipe").click(function() {
         standard = saveStandardRecipe();
-        loadRecipeForm(slug, rank, function() {
+        loadRecipeForm(user_directory, slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
             setFormControls();
@@ -56,7 +57,7 @@ $(document).ready(function() {
 
     $("#add_recipe").click(function() {
         rank = recipes + 1;
-        loadRecipeForm(slug, rank, function() {
+        loadRecipeForm(user_directory, slug, rank, function() {
             $("#controls_container").children().css('visibility', 'hidden');
             populateForm(standard);
             setFormControls();
@@ -71,7 +72,7 @@ $(document).ready(function() {
         if (rank > recipes) {
             rank = 1;
         }
-        loadRecipe(slug, rank, function() {
+        loadRecipe(user_directory, slug, rank, function() {
             compareRecipeTo(standard);
             setRecipeControls(rank, recipes);
         });

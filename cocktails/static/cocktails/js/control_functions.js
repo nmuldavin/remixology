@@ -3,9 +3,9 @@
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
-function loadRecipe(slug, rank, callback) {
+function loadRecipe(user_directory, slug, rank, callback) {
     $("#recipe_container").load(
-    '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
+    '/' + user_directory + '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
         console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
@@ -16,9 +16,9 @@ function loadRecipe(slug, rank, callback) {
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
-function loadRecipeForm(slug, rank, callback) {
+function loadRecipeForm(user_directory, slug, rank, callback) {
     $("#recipe_container").load(
-    '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
+    '/' + user_directory + '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
         console.log("Loaded recipe form " + rank);
         if(callback) {
             callback();
@@ -208,7 +208,6 @@ function formControlListeners() {
 
 function formSubmitListener() {
 $('#form_submit').click(function() { // catch the form's submit event
-            console.log("Event Activated");
             $.ajax({ // create an AJAX call...
                 data: $('#add_recipe_form').serialize(), // get the form data
                 type: $('#add_recipe_form').attr('method'), // GET or POST

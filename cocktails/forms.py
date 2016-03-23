@@ -6,7 +6,7 @@ from django.forms.models import formset_factory
 
 def validate_name_and_slug(name):
     if Cocktail.objects.filter(name=name).exists():
-        raise ValidationError('A cocktial with this name already exists! Choose another?')
+        raise ValidationError('A cocktail with this name already exists! Choose another?')
     slug = slugify(name)
     if Cocktail.objects.filter(slug=slug).exists():
         othername = Cocktail.objects.get(slug=slug)
@@ -20,7 +20,7 @@ class CocktailForm (forms.ModelForm):
 
     class Meta:
         model = Cocktail
-        exclude = ('slug', 'type')
+        exclude = ('slug', 'type', 'user')
 
 
 def nullValidation(amount):
