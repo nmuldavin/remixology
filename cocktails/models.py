@@ -1,7 +1,20 @@
 from __future__ import unicode_literals
 from django.template.defaultfilters import slugify
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+    post_save.connect(create_user_profile, sender=User)
 
 
 # ingredient model. Contains a name and slug field
@@ -23,6 +36,7 @@ class Ingredient(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(default='', blank=True, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     recipes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -31,6 +45,9 @@ class Ingredient(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(Ingredient, self).save(*args, **kwargs)
+
+    class Meta:
+        unique_together = (('user', 'name'), ('user', 'slug'))
 
 # Ingredient entry model, my "it-will-work-for-now" method of getting
 # a 2-D array of ingredients and amounts in to the recipe class. The
@@ -64,8 +81,9 @@ class Recipe(models.Model):
         super(Recipe, self).save(*args, **kwargs)
 
 class RecipeGroup(models.Model):
-    name = models.CharField(default='', max_length=150, unique=True)
-    slug = models.SlugField(default='', blank = True, unique=True)
+    name = models.CharField(default='', max_length=150)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(default='', blank=True)
     type = models.CharField(default='cocktail', max_length=30)
     description = models.TextField(max_length=140, blank=True)
 
@@ -78,6 +96,8 @@ class RecipeGroup(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = (('user', 'name'), ('user', 'slug'))
+
 
 class Cocktail(RecipeGroup):
     type='cocktail'
