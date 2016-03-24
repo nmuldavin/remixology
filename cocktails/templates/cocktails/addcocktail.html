@@ -23,6 +23,7 @@
       {% for hidden in cocktail_form.hidden_fields %}
         {{ hidden }}
       {% endfor %}
+      {% render_field cocktail_form.username type='hidden' value=user_directory %}
       <h1 id="groupname">
         {{ cocktail_form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>

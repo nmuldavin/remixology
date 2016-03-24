@@ -16,8 +16,35 @@ def validate_name_and_slug(name):
         )
 
 class CocktailForm (forms.ModelForm):
-    name = forms.CharField(validators=[validate_name_and_slug])
+    name = forms.CharField()
+    username = forms.CharField()
 
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        name = cleaned_data.get('name')
+        username = cleaned_data.get('username')
+        user = User.objects.get(username=username)
+        slug = slugify(name)
+        if Cocktail.objects.filter(name=name, user=user).exists():
+            raise ValidationError('A cocktail with this name already exists! Choose another?')
+
+        if Cocktail.objects.filter(slug=slug, user=user).exists():
+            othername = Cocktail.objects.get(user=user, slug=slug)
+            raise ValidationError(
+                    'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
+                params={'othername': othername},
+        )
+
+
+
+
+
+        # If url is not empty and doesn't start with 'http://', prepend 'http://'.
+       # if url and not url.startswith('http://'):
+        #    url = 'http://' + url
+         #   cleaned_data['url'] = url
+
+        #return cleaned_data
     class Meta:
         model = Cocktail
         exclude = ('slug', 'type', 'user')
