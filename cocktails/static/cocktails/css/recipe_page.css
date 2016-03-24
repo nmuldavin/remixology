@@ -23,9 +23,11 @@ font-weight: bold;
 
 .char_field {
     border:none;
+    background-color:transparent;
+    outline:none;
 }
 
-.char_field:focus, .char_field:hover{
+.formfield:focus, .formfield:hover{
     outline:none;
-    background-color: beige;
+    background-color: darkseagreen;
 }
