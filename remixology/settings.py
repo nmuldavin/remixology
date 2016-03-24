@@ -1,4 +1,5 @@
 import os
+import dj_database_url
 import psycopg2
 import urlparse
 
@@ -76,8 +77,8 @@ conn = psycopg2.connect(
     port=url.port
 )
 
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 
 
 # DATABASES = {
