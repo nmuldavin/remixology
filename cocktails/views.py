@@ -205,6 +205,9 @@ class AddCocktail(View):
             cocktail.type = 'cocktial'
             cocktail.user = owner
             cocktail.save()
+            owner.userprofile.cocktails += 1
+            owner.save()
+            owner.userprofile.save()
             recipe_form_response = ProcessRecipeForm(owner, cocktail, rank, recipe_form, entry_formset)
 
             if(not recipe_form_response):
@@ -297,3 +300,13 @@ class CocktailPage(View):
         ctx['cocktails'] = cocktails
 
         return render(request, 'cocktails/cocktail_page.html', ctx)
+
+class DirectoryList(View):
+
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        users = User.objects.all()
+        for u in users:
+            print u.userprofile.cocktails
+        ctx['users'] = users
+        return render(request, 'cocktails/directorylist.html', ctx)

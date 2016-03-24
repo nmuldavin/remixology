@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 {% load staticfiles %}
+{% load cocktails_extras %}
 <html>
 
   <head>
@@ -33,11 +34,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/rango/">Remixology</a>
+          <a class="navbar-brand" href="/">Remixology</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-                <li><a href="">Home</a></li>
+                <li><a href="/">Home</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'auth_logout' %}">Logout</a></li>
                     {% else %}
@@ -53,6 +54,11 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           {% block side_block %}
+            {% if user.is_authenticated %}
+              {% user_cocktail_list user_directory=user.username user=user%}
+            {% else %}
+              {% user_cocktail_list user_directory='' user=user%}
+            {% endif %}
           {% endblock %}
 
         </div>

@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cocktails = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.user.username
@@ -34,8 +35,8 @@ class Ingredient(models.Model):
         ('unknown', 'Unknown'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(default='', blank=True, unique=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(default='', blank=True)
     recipes = models.PositiveIntegerField(default=0)
 
     def __str__(self):

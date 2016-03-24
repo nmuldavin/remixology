@@ -1,9 +1,14 @@
 {% if cocktails %}
   <ul class="nav nav-sidebar">
-    <li class="sidebar_heading"><a href="#">Cocktails<span class="sr-only">(current)</a></span></li>
+  {% if user.is_authenticated %}
+    <li class="sidebar_heading"><a href="{% url 'cocktails:cocktail_page' user_directory=user.username%}">Your Cocktails<span class="sr-only">(current)</a></span></li>
     {% for c in cocktails %}
       <li><a href="{% url 'cocktails:cocktail' user_directory=user_directory cocktail_slug=c.slug %}">{{ c.name }}</a></li>
     {% endfor %}
     <li><a id="sidebar_add" style="color:black" href="{% url 'cocktails:add_cocktail' user_directory=user_directory%}">Add Another</a></li>
+  {% endif %}
   </ul>
 {% endif %}
+  <ul class="nav nav-sidebar">
+    <li class="sidebar_heading" ><a href="{% url 'cocktails:directory_list' %}">Public Collections</a></li>
+  </ul>

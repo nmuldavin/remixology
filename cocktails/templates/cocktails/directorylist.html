@@ -9,35 +9,29 @@
   <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipe_page.css' %}">
 {% endblock %}
 
-{% block title %}{{ group.name }}{% endblock %}
+{% block title %}Public Collections{% endblock %}
 
 
 {% block bodyblock %}
-<h1>{{ user_directory }}'s Cocktails</h1>
+<h1>Public Cocktail Collections</h1>
   <table class="table table-hover">
     <thead>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Recipes</th>
+      <th>Username</th>
+      <th>Public Cocktails</th>
     </thead>
     <tbody>
-      {% for cocktail in cocktails %}
-        <tr href="{% url 'cocktails:cocktail' user_directory=user_directory cocktail_slug=cocktail.slug %}">
+      {% for u in users %}
+        <tr href="{% url 'cocktails:cocktail_page' user_directory=u.username %}">
           <td>
-          {{ cocktail.name }}
+          {{ u.username }}
           </td>
           <td>
-            {{ cocktail.description }}
-          </td>
-          <td>
-            {{ cocktail.recipes }}
+           {{ u.userprofile.cocktails }}
           </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  <a class="btn" href="{% url 'cocktails:directory_list' %}" role="button">Back to Public Collections</a>
 {% endblock %}
 
 {% block scripts %}
@@ -49,4 +43,3 @@
   })
 </script>
 {% endblock %}
-

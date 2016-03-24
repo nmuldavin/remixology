@@ -13,9 +13,6 @@
 
 {% block title %}New Cocktail{% endblock %}
 
-{% block side_block %}
-  {% get_cocktail_list user_directory=user_directory %}
-{% endblock %}
 {% block bodyblock %}
     <form id="cocktail_form" method="post" action="/{{ user_directory }}/cocktails/addcocktail/">
       {% csrf_token %}

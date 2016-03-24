@@ -26,7 +26,7 @@ class CocktailForm (forms.ModelForm):
 
     class Meta:
         model = Cocktail
-        exclude = ('slug', 'type', 'user')
+        exclude = ('slug', 'type', 'user', 'recipes')
 
 
 def nullValidation(amount):
@@ -51,4 +51,4 @@ class RecipeForm (forms.ModelForm):
 
     class Meta:
         model = Recipe
-        exclude = ('cocktail', 'rank')
+        exclude = ('cocktail', 'rank', 'user')
