@@ -310,3 +310,10 @@ class DirectoryList(View):
             print u.userprofile.cocktails
         ctx['users'] = users
         return render(request, 'cocktails/directorylist.html', ctx)
+
+class Index(View):
+
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+
+        return render(request, 'cocktails/index.html', ctx)

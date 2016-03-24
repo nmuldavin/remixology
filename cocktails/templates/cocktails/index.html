@@ -1,0 +1,38 @@
+{% extends 'cocktails/base.html' %}
+
+{% load staticfiles %}
+{% load cocktails_extras %}
+
+{% block headfirst %}{% endblock %}
+
+{% block headlast %}
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipe_page.css' %}">
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+
+{% block bodyblock %}
+  <h1>Remixology</h1>
+  <p>Remixology is a web-app for organizing and comparing different versions of cocktail recipes.
+  For example, you might be an avid home mixologist interested in logging and comparing your experimentations as you improve your recipes.
+  You might want to compare two or more Old Fashioned recipes you found online or in books.
+  You might be an avid cocktail enthusiast interested in logging the tips and tricks you hear from your favorite bartenders.</p>
+
+  <p>To see how it works, check out <a href="{% url 'cocktails:cocktail' user_directory='nmuldavin' cocktail_slug='jet-pilot' %}">this example.</a></p>
+
+  <p>Remixology is fully functional and secure but it is a work in progress. Be aware that currently all content is viewable by the
+  general public. </p>
+  <table class="table">
+  <tr>
+    {% if not user.is_authenticated %}
+    <td style="text-align:center"><a href="{% url 'registration_register' %}" class="btn btn-lg btn-default">Sign Up</a></td>
+    <td style="text-align:center"><a href="{% url 'cocktails:directory_list' %}" class="btn btn-lg btn-default">View Public Collections</a></td>
+    <td style="text-align:center"><a href="{% url 'auth_login' %}" class="btn btn-lg btn-default">Log In</a></td>
+    {% endif %}
+  </tr>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
