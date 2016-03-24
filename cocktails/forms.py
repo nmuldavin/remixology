@@ -4,23 +4,29 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.forms.models import formset_factory
 
-def validate_name_and_slug(name):
-    if Cocktail.objects.filter(name=name).exists():
-        raise ValidationError('A cocktial with this name already exists! Choose another?')
-    slug = slugify(name)
-    if Cocktail.objects.filter(slug=slug).exists():
-        othername = Cocktail.objects.get(slug=slug)
-        raise ValidationError(
-                'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
-            params={'othername': othername},
-        )
-
 class CocktailForm (forms.ModelForm):
-    name = forms.CharField(validators=[validate_name_and_slug])
+    name = forms.CharField()
+    username = forms.CharField()
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        name = cleaned_data.get('name')
+        username = cleaned_data.get('username')
+        user = User.objects.get(username=username)
+        slug = slugify(name)
+        if Cocktail.objects.filter(name=name, user=user).exists():
+            raise ValidationError('A cocktail with this name already exists! Choose another?')
+
+        if Cocktail.objects.filter(slug=slug, user=user).exists():
+            othername = Cocktail.objects.get(user=user, slug=slug)
+            raise ValidationError(
+                'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
+                params={'othername': othername},
+            )
 
     class Meta:
         model = Cocktail
-        exclude = ('slug', 'type')
+        exclude = ('slug', 'type', 'user', 'recipes')
 
 
 def nullValidation(amount):
@@ -45,4 +51,4 @@ class RecipeForm (forms.ModelForm):
 
     class Meta:
         model = Recipe
-        exclude = ('cocktail', 'rank')
+        exclude = ('cocktail', 'rank', 'user')

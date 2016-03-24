@@ -2,6 +2,7 @@
 
 {% load staticfiles %}
 {% load widget_tweaks %}
+{% load cocktails_extras %}
 
 {% block headfirst %}{% endblock %}
 
@@ -13,28 +14,29 @@
 {% block title %}New Cocktail{% endblock %}
 
 {% block bodyblock %}
-    <form id="cocktail_form" method="post" action="/cocktails/addcocktail/">
+    <form id="cocktail_form" method="post" action="/{{ user_directory }}/cocktails/addcocktail/">
       {% csrf_token %}
       {{ cocktail_form.non_field_errors }}
       {% for hidden in cocktail_form.hidden_fields %}
         {{ hidden }}
       {% endfor %}
+      {% render_field cocktail_form.username type='hidden' value=user_directory %}
       <h1 id="groupname">
-        {{ cocktail_form.name|add_class:"form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
+        {{ cocktail_form.name|add_class:"formfield form_inherit char_field"|attr:"placeholder:Cocktail Name"}}
       </h1>
 
       {{ cocktail_form.name.errors }}
 
       <p id="groupdescription">
         {{ cocktail_form.description.errors }}
-        {{ cocktail_form.description|add_class:"form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
+        {{ cocktail_form.description|add_class:"formfield form_inherit char_field"|attr:"rows:2"|attr:"placeholder:Short Description"}}
       </p>
       <div id="recipe_container">
         {% with 'cocktails/inner_recipe_form.html' as template %}
           {% include template %}
         {% endwith %}
       </div>
-      <input type="submit" name="submit" value="Create Category" />
+      <input type="submit" class="btn" name="submit" value="Add Cocktail" />
     </form>
 
 

@@ -1,0 +1,41 @@
+{% extends "cocktails/base.html" %}
+{% load widget_tweaks %}
+
+{% block bodyblock %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-10">
+        <h1>Sign up</h1>
+        <p>Already registered?
+          <a href="{% url 'django.contrib.auth.views.login' %}">Sign in here.</a></p>
+      </div>
+    </div>
+    {% if form.errors or form.non_field_errors %}
+      <div class="alert alert-block alert-error fade in">
+        <p><strong>Oops! There were errors processing your form.</strong></p>
+        {% if form.non_field_errors %}
+          <ul>
+            {{ form.non_field_errors|unordered_list }}
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+    <form method='post' action=''>
+      {% csrf_token %}
+      {% for field in form %}
+        <fieldset class="form-group {% if field.errors %}error{% endif %}">
+          <label for="{{ field.auto_id }}">{{ field.label }}</label>
+            {{ field|add_class:"form-control" }}
+
+            {% if field.errors %}
+              <span class="help-inline">{{ field.errors|striptags }}</span>
+            {% endif %}
+        </fieldset>
+      {% endfor %}
+
+      <input type="submit" class="btn" value="Submit"/>
+      <input name="next" type="hidden" value="{{next}}">
+    </form>
+  </div>
+
+{% endblock %}

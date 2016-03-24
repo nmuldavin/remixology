@@ -1,6 +1,7 @@
 {% extends 'cocktails/base.html' %}
 
 {% load staticfiles %}
+{% load cocktails_extras %}
 
 {% block headfirst %}{% endblock %}
 
@@ -10,29 +11,40 @@
 
 {% block title %}{{ group.name }}{% endblock %}
 
+
 {% block bodyblock %}
   {% if group %}
-    <h1 id="groupname">{{ group.name }}</h1>
-    <p id="groupdescription">{{ group.description }}</p>
-    <div id="controls_container">
-      <button class="btn" id="previous">Previous</button>
-      {% for i in recipes_range %}
-        <button class="btn recipe_button">{{ i }}</button>
-      {% endfor %}
-      <button class="btn" id="next">Next</button>
-    </div>
+    {% if permission_denied %}
+      {{ permission_denied }}
+    {% else %}
+      <h1 id="groupname" data-user_directory={{ user_directory }}>{{ group.name }}</h1>
+      <p id="groupdescription">{{ group.description }}</p>
+      <div id="controls_container">
+        <button class="btn" id="previous">Previous</button>
+        {% for i in recipes_range %}
+          <button class="btn recipe_button">{{ i }}</button>
+        {% endfor %}
+        <button class="btn" id="next">Next</button>
+      </div>
 
-    <div id="recipe_container" data-group={{ group.slug }} data-reciperank={{ reciperank }} data-recipes={{ recipes }}>
-      {% with 'cocktails/recipe.html' as template %}
-        {% include template %}
-      {% endwith %}
-    </div>
-    <div id="form_controls_container">
-      <button class="btn" id="edit_recipe">Edit Recipe</button>
-      <button class="btn" id="add_recipe">Add another</button>
-      <button type="submit" class="btn" id="form_submit">Save</button>
-      <button class="btn" id="cancel_form">Cancel</button>
-    </div>
+      <div id="recipe_container" data-group={{ group.slug }} data-reciperank={{ reciperank }} data-recipes={{ recipes }}>
+        {% with 'cocktails/recipe.html' as template %}
+          {% include template %}
+        {% endwith %}
+      </div>
+      {% if user.username == user_directory %}
+      <div id="form_controls_container">
+        <button class="btn" id="edit_recipe">Edit Recipe</button>
+        <button class="btn" id="add_recipe">Add another</button>
+        <button class="btn" id="delete_recipe">Delete Recipe</button>
+        <button class="btn" id="delete_cocktail">Delete Cocktail</button>
+        <button type="submit" class="btn" id="form_submit">Save</button>
+        <button class="btn" id="cancel_form">Cancel</button>
+      {% else %}
+        <a class="btn" href="{% url 'cocktails:cocktail_page' user_directory=user_directory %}">Back to {{ user_directory }}'s public page</a>
+      {% endif %}
+      </div>
+    {% endif %}
   {% else %}
     The specified {{ type }} does not exist!
   {% endif %}

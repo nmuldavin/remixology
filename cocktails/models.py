@@ -1,7 +1,21 @@
 from __future__ import unicode_literals
 from django.template.defaultfilters import slugify
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cocktails = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
+
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+    post_save.connect(create_user_profile, sender=User)
 
 
 # ingredient model. Contains a name and slug field
@@ -20,9 +34,9 @@ class Ingredient(models.Model):
         ),
         ('unknown', 'Unknown'),
     )
-
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(default='', blank=True, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(default='', blank=True)
     recipes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -32,6 +46,9 @@ class Ingredient(models.Model):
         self.slug = slugify(self.name)
         super(Ingredient, self).save(*args, **kwargs)
 
+    class Meta:
+        unique_together = (('user', 'name'), ('user', 'slug'))
+
 # Ingredient entry model, my "it-will-work-for-now" method of getting
 # a 2-D array of ingredients and amounts in to the recipe class. The
 # IngredientEntry class contains a spot for an ingredient and a spot for
@@ -40,6 +57,7 @@ class Ingredient(models.Model):
 # does not allow relational entries as a base field. Eventually it would be good
 # to find a better way of storing this data.
 class Entry(models.Model):
+    user = models.ForeignKey(User, null=True)
     rank = models.IntegerField(default=0)
     amount = models.CharField(max_length=30, blank=True)
     ingredient = models.ForeignKey(Ingredient, null=True)
@@ -47,6 +65,7 @@ class Entry(models.Model):
 
 # Recipe model
 class Recipe(models.Model):
+    user = models.ForeignKey(User, null=True)
     label = models.CharField(blank=True, max_length=100)
     directions = models.TextField(blank=True)
     notes = models.TextField(blank=True)
@@ -64,9 +83,12 @@ class Recipe(models.Model):
         super(Recipe, self).save(*args, **kwargs)
 
 class RecipeGroup(models.Model):
-    name = models.CharField(default='', max_length=150, unique=True)
-    slug = models.SlugField(default='', blank = True, unique=True)
+    name = models.CharField(default='', max_length=150)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(default='', blank=True)
     type = models.CharField(default='cocktail', max_length=30)
+    public = models.BooleanField(default=False)
+    recipes = models.PositiveIntegerField(default=1)
     description = models.TextField(max_length=140, blank=True)
 
     def __str__(self):
@@ -78,6 +100,8 @@ class RecipeGroup(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = (('user', 'name'), ('user', 'slug'))
+
 
 class Cocktail(RecipeGroup):
     type='cocktail'

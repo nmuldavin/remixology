@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 {% load staticfiles %}
-
+{% load cocktails_extras %}
 <html>
 
   <head>
@@ -14,7 +14,7 @@
 
     <!-- Default stylesheets -->
     <link href="{% static 'cocktails/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
+    <link href="{% static 'cocktails/css/base.css' %}" rel="stylesheet">
     <!-- Block to input stylesheets and scripts that override defaults (bootstrap, etc -->
     {% block headlast %}{% endblock %}
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>
@@ -25,8 +25,50 @@
   </head>
 
   <body>
-    <!-- Main Content -->
-    {% block bodyblock %}{% endblock %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Remixology</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+                <li><a href="/">Home</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'auth_logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'registration_register' %}">Register Here</a></li>
+                        <li><a href="{% url 'auth_login' %}">Login</a></li>
+                    {% endif %}
+              </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          {% block side_block %}
+            {% if user.is_authenticated %}
+              {% user_cocktail_list user_directory=user.username user=user%}
+            {% else %}
+              {% user_cocktail_list user_directory='' user=user%}
+            {% endif %}
+          {% endblock %}
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+           <div>
+              {% block bodyblock %}{% endblock %}
+            </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Standard Scripts -->
     <script src="{% static 'cocktails/js/jquery-1.12.1.js' %}"></script>

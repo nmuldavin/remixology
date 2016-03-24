@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -93,7 +94,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+# User Stuff
+REGISTRATION_OPEN = True
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_AUTO_LOGIN = True
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 

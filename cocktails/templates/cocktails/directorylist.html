@@ -1,0 +1,45 @@
+{% extends 'cocktails/base.html' %}
+
+{% load staticfiles %}
+{% load cocktails_extras %}
+
+{% block headfirst %}{% endblock %}
+
+{% block headlast %}
+  <link rel="stylesheet" type="text/css" href="{% static 'cocktails/css/recipe_page.css' %}">
+{% endblock %}
+
+{% block title %}Public Collections{% endblock %}
+
+
+{% block bodyblock %}
+<h1>Public Cocktail Collections</h1>
+  <table class="table table-hover">
+    <thead>
+      <th>Username</th>
+      <th>Public Cocktails</th>
+    </thead>
+    <tbody>
+      {% for u in users %}
+        <tr href="{% url 'cocktails:cocktail_page' user_directory=u.username %}">
+          <td>
+          {{ u.username }}
+          </td>
+          <td>
+           {{ u.userprofile.cocktails }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $('tr').click(function() {
+      window.document.location = $(this).attr('href')
+    })
+  })
+</script>
+{% endblock %}

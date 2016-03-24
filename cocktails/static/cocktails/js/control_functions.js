@@ -3,22 +3,54 @@
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
-function loadRecipe(slug, rank, callback) {
-    $("#recipe_container").html('').load(
-    '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
+function loadRecipe(user_directory, slug, rank, callback) {
+    $("#recipe_container").load(
+    '/' + user_directory + '/cocktails/'+ slug + '/get_recipe/' + String(rank) + '/', function() {
         console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
         }
-    }).hide().fadeIn('slow');
+    }).hide().fadeIn('fast');
 }
 
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
+
+function deleteRecipe(user_directory, slug, rank, callback) {
+    $.get('/' + user_directory + '/cocktails/'+ slug + '/delete_recipe/' + String(rank) + '/', function(data) {
+        if (data == 'success') {
+            if (callback) {
+                callback();
+            }
+        }
+    })
+}
+
+function deleteCocktail(user_directory, slug, callback) {
+    $.get('/' + user_directory + '/cocktails/'+ slug + '/delete_cocktail/', function(data) {
+        if (data == 'success') {
+            if (callback) {
+                callback();
+            }
+        }
+    })
+}
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
-function loadRecipeForm(slug, rank, callback) {
-    $("#recipe_container").html('').load(
-    '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
+function loadRecipeForm(user_directory, slug, rank, callback) {
+    $("#recipe_container").load(
+    '/' + user_directory + '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank) + '/', function() {
         console.log("Loaded recipe form " + rank);
         if(callback) {
             callback();
@@ -206,9 +238,9 @@ function formControlListeners() {
     })
 }
 
+
 function formSubmitListener() {
 $('#form_submit').click(function() { // catch the form's submit event
-            console.log("Event Activated");
             $.ajax({ // create an AJAX call...
                 data: $('#add_recipe_form').serialize(), // get the form data
                 type: $('#add_recipe_form').attr('method'), // GET or POST
@@ -231,6 +263,8 @@ $('#form_submit').click(function() { // catch the form's submit event
 function setRecipeControls(rank, recipes) {
     $("#add_recipe").show();
     $("#edit_recipe").show();
+    $("#delete_recipe").show();
+    $("#delete_cocktail").show();
     $("#form_submit").hide();
     $("#cancel_form").hide();
 
@@ -255,6 +289,8 @@ function setFormControls() {
     $("#controls_container").css('visibility', 'hidden');
     $("#add_recipe").hide();
     $("#edit_recipe").hide();
+    $("#delete_recipe").hide();
+    $("#delete_cocktail").hide();
     $("#form_submit").show();
     $("#cancel_form").show();
 }

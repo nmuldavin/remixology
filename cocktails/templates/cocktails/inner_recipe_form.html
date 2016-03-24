@@ -4,7 +4,7 @@
   <table>
     <tr>
       <td>Recipe {{ rank }} - </td>
-      <td>{{ recipe_form.label|add_class:"form_inherit char_field recipe_label"|attr:"placeholder:Recipe Label" }}</td>
+      <td>{{ recipe_form.label|add_class:"formfield form_inherit char_field recipe_label"|attr:"placeholder:Recipe Label" }}</td>
     </tr>
   </table>
 </h2>
@@ -21,13 +21,13 @@
       {{ entry_formset.non_form_errors }}
       {% for entry in entry_formset %}
         <tr class="recipe-entry">
-          <td class="entry-data amount">
+          <td class="formfield entry-data amount">
             {% with entry.amount.name.value|default_if_none:'' as values %}
               {% render_field entry.amount class+="form_inherit char_field entry_form" value=values%}
               {{ entry.amount.errors }}
             {% endwith %}
           </td>
-          <td class="entry-data ingredient">
+          <td class="formfield entry-data ingredient">
             {{ entry.ingredient|add_class:"form_inherit char_field entry_form"|add_error_attr:"placeholder:Please provide an ingredient name or remove this entry." }}
           </td>
         </tr>
@@ -40,11 +40,11 @@
 
 <p id="recipe_directions">
   {{ recipe_form.directions.errors }}
-  {{ recipe_form.directions|add_class:"form_inherit char_field"|attr:"rows:1"|attr:"placeholder:Directions . . . "}}
+  {{ recipe_form.directions|add_class:"formfield form_inherit char_field"|attr:"rows:1"|attr:"placeholder:Directions . . . "}}
 </p>
 
 <h4>Notes</h4>
 <p id="recipe_directions">
   {{ recipe_form.notes.errors }}
-  {{ recipe_form.notes|add_class:"form_inherit char_field"|attr:"rows:1"|attr:"placeholder:Notes . . . "}}
+  {{ recipe_form.notes|add_class:"formfield form_inherit char_field"|attr:"rows:1"|attr:"placeholder:Notes . . . "}}
 </p>
