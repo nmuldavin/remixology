@@ -87,6 +87,7 @@ class RecipeGroup(models.Model):
     slug = models.SlugField(default='', blank=True)
     type = models.CharField(default='cocktail', max_length=30)
     public = models.BooleanField(default=False)
+    recipes = models.PositiveIntegerField(default=1)
     description = models.TextField(max_length=140, blank=True)
 
     def __str__(self):

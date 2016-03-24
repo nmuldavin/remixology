@@ -7,4 +7,4 @@ register = template.Library()
 @register.inclusion_tag('cocktails/user_cocktail_list.html')
 def user_cocktail_list(user_directory, user):
     owner = User.objects.get(username=user_directory)
-    return {'cocktails': Cocktail.objects.filter(user=owner), 'user_directory':user_directory, 'user':user}
+    return {'cocktails': Cocktail.objects.filter(user=owner).order_by('name'), 'user_directory':user_directory, 'user':user}

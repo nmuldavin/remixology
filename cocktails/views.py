@@ -271,6 +271,7 @@ class AddRecipe(View):
         recipe_form_response = ProcessRecipeForm(owner, cocktail, rank, recipe_form, entry_formset)
 
         if(not recipe_form_response):
+            cocktail.recipes += 1
             return HttpResponse('saved')
 
         else:
@@ -284,3 +285,15 @@ class AddRecipe(View):
         ctx['entry_formset'] = entry_formset
 
         return render(request, 'cocktails/recipe_form.html', ctx)
+
+class CocktailPage(View):
+
+    def get(self, request, *args, **kwargs):
+        ctx = {}
+        user_directory = self.kwargs['user_directory']
+        ctx['user_directory'] = user_directory
+        owner = User.objects.get(username=user_directory)
+        cocktails = Cocktail.objects.filter(user=owner).order_by('-recipes')
+        ctx['cocktails'] = cocktails
+
+        return render(request, 'cocktails/cocktail_page.html', ctx)
