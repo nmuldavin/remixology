@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.views.generic import View
+from django.views.generic import View, DeleteView
 from .models import *
 from .forms import *
 from django.template import RequestContext
@@ -267,14 +267,17 @@ class AddRecipe(View):
         cocktail_slug = self.kwargs['cocktail_slug']
         user_directory = self.kwargs['user_directory']
         owner = User.objects.get(username=user_directory)
-        cocktail = Cocktail.objects.get(slug=cocktail_slug)
+        cocktail = Cocktail.objects.get(user=owner, slug=cocktail_slug)
 
         rank = int(self.kwargs['rank'])
 
         recipe_form_response = ProcessRecipeForm(owner, cocktail, rank, recipe_form, entry_formset)
 
         if(not recipe_form_response):
-            cocktail.recipes += 1
+            print cocktail.recipes
+            cocktail.recipes = cocktail.recipes + 1
+            cocktail.save()
+            print cocktail.recipes
             return HttpResponse('saved')
 
         else:
@@ -306,8 +309,6 @@ class DirectoryList(View):
     def get(self, request, *args, **kwargs):
         ctx = {}
         users = User.objects.all()
-        for u in users:
-            print u.userprofile.cocktails
         ctx['users'] = users
         return render(request, 'cocktails/directorylist.html', ctx)
 
@@ -317,3 +318,33 @@ class Index(View):
         ctx = {}
 
         return render(request, 'cocktails/index.html', ctx)
+
+class DeleteRecipe(View):
+
+    def get(self, request, *args, **kwargs):
+        print 'Got Here'
+        ctx = {}
+        cocktail_slug = self.kwargs['cocktail_slug']
+        ctx['cocktail_slug'] = cocktail_slug
+
+        user_directory = self.kwargs['user_directory']
+        ctx['user_directory'] = user_directory
+        owner = User.objects.get(username=user_directory)
+        if owner == request.user:
+            cocktail = Cocktail.objects.get(user=owner, slug=cocktail_slug)
+            allrecipes = Recipe.objects.filter(cocktail=cocktail)
+            rank = int(self.kwargs['rank'])
+            ctx['rank'] = rank
+            if Recipe.objects.filter(cocktail=cocktail, rank=rank).exists():
+                recipe = Recipe.objects.get(cocktail=cocktail, rank=rank)
+                recipe.delete()
+                for r in allrecipes:
+                    print r.rank
+                    print rank
+                    if r.rank > int(rank):
+                        r.rank = r.rank - 1
+                        r.save()
+                cocktail.recipes = cocktail.recipes - 1
+                cocktail.save()
+
+                return HttpResponse('success')

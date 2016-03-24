@@ -5,7 +5,7 @@
 // the rendered response in to the recipe container div.
 function loadRecipe(user_directory, slug, rank, callback) {
     $("#recipe_container").load(
-    '/' + user_directory + '/cocktails/'+ slug + '/get_recipe/' + String(rank), function() {
+    '/' + user_directory + '/cocktails/'+ slug + '/get_recipe/' + String(rank) + '/', function() {
         console.log("Loaded recipe " + rank);
         if(callback) {
             callback();
@@ -13,12 +13,30 @@ function loadRecipe(user_directory, slug, rank, callback) {
     }).hide().fadeIn('fast');
 }
 
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
+
+function deleteRecipe(user_directory, slug, rank) {
+    $.get('/' + user_directory + '/cocktails/'+ slug + '/delete_recipe/' + String(rank) + '/', function(data) {
+        console.log(data)
+    })
+}
 // loadRecipe function makes a request to the GetRecipe view,
 // passing the group slug and recipe rank through the url. It then loads
 // the rendered response in to the recipe container div.
 function loadRecipeForm(user_directory, slug, rank, callback) {
     $("#recipe_container").load(
-    '/' + user_directory + '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank), function() {
+    '/' + user_directory + '/cocktails/'+ slug + '/add_or_edit_recipe/' + String(rank) + '/', function() {
         console.log("Loaded recipe form " + rank);
         if(callback) {
             callback();
@@ -205,6 +223,7 @@ function formControlListeners() {
         changeManagementFormNumbers(-1);
     })
 }
+
 
 function formSubmitListener() {
 $('#form_submit').click(function() { // catch the form's submit event

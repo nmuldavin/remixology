@@ -78,7 +78,13 @@ $(document).ready(function() {
         });
     });
 
-
+    $("#delete_recipe").click(function() {
+        var agree = confirm("Are you sure you want to delete this recipe?")
+        if (agree) {
+            console.log('yes')
+            deleteRecipe(user_directory, slug, rank)
+        }
+    })
 
 
 
