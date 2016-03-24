@@ -81,12 +81,20 @@ $(document).ready(function() {
     $("#delete_recipe").click(function() {
         var agree = confirm("Are you sure you want to delete this recipe?")
         if (agree) {
-            console.log('yes')
-            deleteRecipe(user_directory, slug, rank)
+            deleteRecipe(user_directory, slug, rank, function() {
+                window.location.reload()
+            })
         }
     })
 
-
+    $("#delete_cocktail").click(function() {
+        var agree = confirm("Are you sure you want to delete this recipe?")
+        if (agree) {
+            deleteCocktail(user_directory, slug, function() {
+                window.location = '/' + user_directory + '/cocktails/'
+            })
+        }
+    })
 
 
 });

@@ -348,3 +348,25 @@ class DeleteRecipe(View):
                 cocktail.save()
 
                 return HttpResponse('success')
+        else:
+            return HttpResponse('Permission Denied!')
+
+class DeleteCocktail(View):
+
+    def get(self, request, *args, **kwargs):
+        ctx={}
+        cocktail_slug = self.kwargs['cocktail_slug']
+        ctx['cocktail_slug'] = cocktail_slug
+
+        user_directory = self.kwargs['user_directory']
+        ctx['user_directory'] = user_directory
+        owner = User.objects.get(username=user_directory)
+        if (owner == request.user):
+            cocktail = Cocktail.objects.get(user=owner, slug=cocktail_slug)
+            cocktail.delete()
+            owner.userprofile.cocktails -= 1
+            owner.save()
+
+            return HttpResponse('success')
+        else:
+            return HttpResponse('Permission Denied!')

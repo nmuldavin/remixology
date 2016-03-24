@@ -26,9 +26,23 @@ function getCookie(c_name) {
     return "";
 }
 
-function deleteRecipe(user_directory, slug, rank) {
+function deleteRecipe(user_directory, slug, rank, callback) {
     $.get('/' + user_directory + '/cocktails/'+ slug + '/delete_recipe/' + String(rank) + '/', function(data) {
-        console.log(data)
+        if (data == 'success') {
+            if (callback) {
+                callback();
+            }
+        }
+    })
+}
+
+function deleteCocktail(user_directory, slug, callback) {
+    $.get('/' + user_directory + '/cocktails/'+ slug + '/delete_cocktail/', function(data) {
+        if (data == 'success') {
+            if (callback) {
+                callback();
+            }
+        }
     })
 }
 // loadRecipe function makes a request to the GetRecipe view,
@@ -249,6 +263,8 @@ $('#form_submit').click(function() { // catch the form's submit event
 function setRecipeControls(rank, recipes) {
     $("#add_recipe").show();
     $("#edit_recipe").show();
+    $("#delete_recipe").show();
+    $("#delete_cocktail").show();
     $("#form_submit").hide();
     $("#cancel_form").hide();
 
@@ -273,6 +289,8 @@ function setFormControls() {
     $("#controls_container").css('visibility', 'hidden');
     $("#add_recipe").hide();
     $("#edit_recipe").hide();
+    $("#delete_recipe").hide();
+    $("#delete_cocktail").hide();
     $("#form_submit").show();
     $("#cancel_form").show();
 }
