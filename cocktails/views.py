@@ -87,13 +87,13 @@ class RecipeView(View):
         ctx = {}
         if 'cocktail_slug' in self.kwargs:
             group_slug = self.kwargs['cocktail_slug']
+            user_directory = self.kwargs['user_directory']
+            owner = User.objects.filter(username=user_directory)
+            ctx['user_directory'] = user_directory
             try:
-                group = Cocktail.objects.get(slug=group_slug)
+                group = Cocktail.objects.get(user=owner, slug=group_slug)
             except:
                 print ("Error: Attempting to load recipe for nonexistent group")
-
-            user_directory = self.kwargs['user_directory']
-            ctx['user_directory'] = user_directory
 
             rank = self.kwargs['rank']
 
@@ -103,11 +103,12 @@ class RecipeView(View):
         return render(request, 'cocktails/recipe.html', ctx)
 
 
-def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
+def ProcessRecipeForm(user, cocktail, rank, recipe_form, entry_formset):
     Success = False
     if recipe_form.is_valid():
         recipe = recipe_form.save(commit=False)
         recipe.cocktail = cocktail
+        recipe.user = user
         recipe.rank = rank
         if (Recipe.objects.filter(cocktail=cocktail, rank=rank).exists()):
             existing_recipe = Recipe.objects.get(cocktail=cocktail, rank=rank)
@@ -127,17 +128,18 @@ def ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset):
                     entry_object.amount = entry.cleaned_data['amount']
 
                     entry_object.rank = entry_rank
+                    entry_object.user = user
                     ingredient_name = entry.cleaned_data['ingredient']
                     #print(ingredient_name)
 
                     slug = slugify(ingredient_name)
 
-                    if (Ingredient.objects.filter(slug=slug).exists()):
-                        ingredient_object = Ingredient.objects.get(slug=slug)
+                    if (Ingredient.objects.filter(user=user, slug=slug).exists()):
+                        ingredient_object = Ingredient.objects.get(user=user, slug=slug)
                         ingredient_object.recipes += 1
 
                     else:
-                        ingredient_object = Ingredient.objects.create(name=ingredient_name)
+                        ingredient_object = Ingredient.objects.create(user=user, name=ingredient_name)
                         ingredient_object.recipes = 1
 
                     ingredient_object.save()
@@ -203,7 +205,7 @@ class AddCocktail(View):
             cocktail.type = 'cocktial'
             cocktail.user = owner
             cocktail.save()
-            recipe_form_response = ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset)
+            recipe_form_response = ProcessRecipeForm(owner, cocktail, rank, recipe_form, entry_formset)
 
             if(not recipe_form_response):
                 return redirect('cocktails:cocktail', user_directory=user_directory, cocktail_slug=cocktail.slug, rank=1)
@@ -260,11 +262,13 @@ class AddRecipe(View):
                                 extra=0)
         entry_formset = EntryFormSetVariation(request.POST, prefix='entry_formset')
         cocktail_slug = self.kwargs['cocktail_slug']
+        user_directory = self.kwargs['user_directory']
+        owner = User.objects.get(username=user_directory)
         cocktail = Cocktail.objects.get(slug=cocktail_slug)
 
         rank = int(self.kwargs['rank'])
 
-        recipe_form_response = ProcessRecipeForm(cocktail, rank, recipe_form, entry_formset)
+        recipe_form_response = ProcessRecipeForm(owner, cocktail, rank, recipe_form, entry_formset)
 
         if(not recipe_form_response):
             return HttpResponse('saved')
@@ -280,7 +284,3 @@ class AddRecipe(View):
         ctx['entry_formset'] = entry_formset
 
         return render(request, 'cocktails/recipe_form.html', ctx)
-
-
-
-

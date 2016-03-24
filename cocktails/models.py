@@ -33,10 +33,9 @@ class Ingredient(models.Model):
         ),
         ('unknown', 'Unknown'),
     )
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(default='', blank=True, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     recipes = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -57,6 +56,7 @@ class Ingredient(models.Model):
 # does not allow relational entries as a base field. Eventually it would be good
 # to find a better way of storing this data.
 class Entry(models.Model):
+    user = models.ForeignKey(User, null=True)
     rank = models.IntegerField(default=0)
     amount = models.CharField(max_length=30, blank=True)
     ingredient = models.ForeignKey(Ingredient, null=True)
@@ -64,6 +64,7 @@ class Entry(models.Model):
 
 # Recipe model
 class Recipe(models.Model):
+    user = models.ForeignKey(User, null=True)
     label = models.CharField(blank=True, max_length=100)
     directions = models.TextField(blank=True)
     notes = models.TextField(blank=True)

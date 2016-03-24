@@ -12,7 +12,7 @@
 {% block title %}{{ group.name }}{% endblock %}
 
 {% block side_block %}
-  {% get_cocktail_list user_directory=user_directory %}
+  {% user_cocktail_list user_directory=user_directory user=user%}
 {% endblock %}
 
 {% block bodyblock %}

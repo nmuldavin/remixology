@@ -4,17 +4,6 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.forms.models import formset_factory
 
-def validate_name_and_slug(name):
-    if Cocktail.objects.filter(name=name).exists():
-        raise ValidationError('A cocktail with this name already exists! Choose another?')
-    slug = slugify(name)
-    if Cocktail.objects.filter(slug=slug).exists():
-        othername = Cocktail.objects.get(slug=slug)
-        raise ValidationError(
-                'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
-            params={'othername': othername},
-        )
-
 class CocktailForm (forms.ModelForm):
     name = forms.CharField()
     username = forms.CharField()
@@ -31,20 +20,10 @@ class CocktailForm (forms.ModelForm):
         if Cocktail.objects.filter(slug=slug, user=user).exists():
             othername = Cocktail.objects.get(user=user, slug=slug)
             raise ValidationError(
-                    'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
+                'The name you chose is too similar to the existing name \'%(othername)s\'. Choose another?',
                 params={'othername': othername},
-        )
+            )
 
-
-
-
-
-        # If url is not empty and doesn't start with 'http://', prepend 'http://'.
-       # if url and not url.startswith('http://'):
-        #    url = 'http://' + url
-         #   cleaned_data['url'] = url
-
-        #return cleaned_data
     class Meta:
         model = Cocktail
         exclude = ('slug', 'type', 'user')
