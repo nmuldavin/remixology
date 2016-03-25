@@ -1,4 +1,4 @@
-<form id="add_recipe_form" method="post" action="/{{ user_directory }}/cocktails/{{ cocktail_slug }}/add_or_edit_recipe/{{ rank }}/">
+<form autocomplete="off" id="add_recipe_form" method="post" action="/{{ user_directory }}/cocktails/{{ cocktail_slug }}/add_or_edit_recipe/{{ rank }}/">
   <div id="recipe_container">
     {% csrf_token %}
     {% with 'cocktails/inner_recipe_form.html' as template %}
