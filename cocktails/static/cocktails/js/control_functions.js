@@ -10,7 +10,7 @@ function loadRecipe(user_directory, slug, rank, callback) {
         if(callback) {
             callback();
         }
-    }).hide().fadeIn('fast');
+    }).hide().fadeIn('slow');
 }
 
 function getCookie(c_name) {
